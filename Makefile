@@ -96,6 +96,9 @@ build-tests: .build-tests-post
 .build-tests-pre:
 # Add your pre 'build-tests' code here...
 
+.build-tests-conf:
+# Added Null rule for build-tests-conf
+
 .build-tests-post: .build-tests-impl
 # Add your post 'build-tests' code here...
 
@@ -105,6 +108,10 @@ test: .test-post
 
 .test-pre: build-tests
 # Add your pre 'test' code here...
+
+.test-conf:
+# Added Null rule for test-conf
+
 
 .test-post: .test-impl
 # Add your post 'test' code here...

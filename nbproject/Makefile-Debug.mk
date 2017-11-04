@@ -36,10 +36,21 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/Inventory.o \
+	${OBJECTDIR}/LinkedList.o \
 	${OBJECTDIR}/Sales.o \
 	${OBJECTDIR}/StockItem.o \
 	${OBJECTDIR}/StockProgram.o
 
+# Test Directory
+TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
+
+# Test Files
+TESTFILES= \
+	${TESTDIR}/TestFiles/f1
+
+# Test Object Files
+TESTOBJECTFILES= \
+	${TESTDIR}/tests/LinkedListSimpleTest.o
 
 # C Compiler Flags
 CFLAGS=
@@ -70,6 +81,11 @@ ${OBJECTDIR}/Inventory.o: Inventory.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -std=c11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Inventory.o Inventory.c
 
+${OBJECTDIR}/LinkedList.o: LinkedList.c
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -std=c11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/LinkedList.o LinkedList.c
+
 ${OBJECTDIR}/Sales.o: Sales.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -87,6 +103,95 @@ ${OBJECTDIR}/StockProgram.o: StockProgram.c
 
 # Subprojects
 .build-subprojects:
+
+# Build Test Targets
+.build-tests-conf: .build-tests-subprojects .build-conf ${TESTFILES}
+.build-tests-subprojects:
+
+${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/LinkedListSimpleTest.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.c} -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS}   
+
+
+${TESTDIR}/tests/LinkedListSimpleTest.o: tests/LinkedListSimpleTest.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} "$@.d"
+	$(COMPILE.c) -g -I. -std=c11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/LinkedListSimpleTest.o tests/LinkedListSimpleTest.c
+
+
+${OBJECTDIR}/Inventory_nomain.o: ${OBJECTDIR}/Inventory.o Inventory.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/Inventory.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -std=c11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Inventory_nomain.o Inventory.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/Inventory.o ${OBJECTDIR}/Inventory_nomain.o;\
+	fi
+
+${OBJECTDIR}/LinkedList_nomain.o: ${OBJECTDIR}/LinkedList.o LinkedList.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/LinkedList.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -std=c11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/LinkedList_nomain.o LinkedList.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/LinkedList.o ${OBJECTDIR}/LinkedList_nomain.o;\
+	fi
+
+${OBJECTDIR}/Sales_nomain.o: ${OBJECTDIR}/Sales.o Sales.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/Sales.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -std=c11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Sales_nomain.o Sales.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/Sales.o ${OBJECTDIR}/Sales_nomain.o;\
+	fi
+
+${OBJECTDIR}/StockItem_nomain.o: ${OBJECTDIR}/StockItem.o StockItem.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/StockItem.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -std=c11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/StockItem_nomain.o StockItem.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/StockItem.o ${OBJECTDIR}/StockItem_nomain.o;\
+	fi
+
+${OBJECTDIR}/StockProgram_nomain.o: ${OBJECTDIR}/StockProgram.o StockProgram.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/StockProgram.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -g -std=c11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/StockProgram_nomain.o StockProgram.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/StockProgram.o ${OBJECTDIR}/StockProgram_nomain.o;\
+	fi
+
+# Run Test Targets
+.test-conf:
+	@if [ "${TEST}" = "" ]; \
+	then  \
+	    ${TESTDIR}/TestFiles/f1 || true; \
+	else  \
+	    ./${TEST} || true; \
+	fi
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
