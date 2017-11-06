@@ -4,10 +4,3 @@
  * and open the template in the editor.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <limits.h>
-
-#include "Inventory.h"
-#include "StockItem.h"

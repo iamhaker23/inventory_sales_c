@@ -5,32 +5,28 @@
  */
 
 /* 
- * File:   Sales.h
+ * File:   date.h
  * Author: Hakeem
  *
- * Created on 03 November 2017, 12:07
+ * Created on 05 November 2017, 14:03
  */
 
-#ifndef SALES_H
-#define SALES_H
-
-#include "Date.h"
-#include "StockItem.h";
+#ifndef DATE_H
+#define DATE_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef struct _Sales{
-        Date date;
-        StockItem item;
-        int quantity;
-    }Sales;
-
+    typedef struct _Date{
+        int dayOfMonth;
+        int month;
+        int year;
+    } Date;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* SALES_H */
+#endif /* DATE_H */
 

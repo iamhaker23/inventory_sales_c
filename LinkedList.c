@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 #include "LinkedList.h"
 
@@ -192,13 +193,28 @@ void list_sort(List* list, int ascending_flag){
 
 
 void list_fprint(List* list, FILE* fd){
-    char tmp[512];
-    list_as_string(list, tmp);
+    int buffer_size = list_estimate_required_buffer(list);
+    char tmp[buffer_size];
+    list_as_string(list, tmp, buffer_size);
     fprintf(fd, tmp);
     fflush(fd);
 }
 
-char * list_as_string(List* list, char *tmp){
+int list_estimate_required_buffer(List* list){
+    //assuming max of 10 characters per element.
+    int estimate = list->length * 10;
+    return estimate;
+}
+
+void list_as_string(List* list, char *tmp, int tmp_length){
+    
+    //stop if the buffer is not large enough
+    int est = list_estimate_required_buffer(list);
+    if (tmp_length < est ){
+        printf("Error: list_as_string() attempted to load %d bytes into %d buffer.\n", est, tmp_length);
+        exit(EXIT_FAILURE);
+    }
+    
     if (list->length == 0){
         snprintf(tmp, sizeof(tmp), "List is empty.");
     }else{
@@ -210,7 +226,6 @@ char * list_as_string(List* list, char *tmp){
         }
         snprintf(tmp + strlen(tmp), sizeof(tmp), " )", list);
     }
-    return *tmp;
 }
 
 int list_memory_size(List* list){

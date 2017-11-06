@@ -4,33 +4,51 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>Date.h</itemPath>
       <itemPath>Inventory.h</itemPath>
       <itemPath>LinkedList.h</itemPath>
       <itemPath>Sales.h</itemPath>
       <itemPath>StockItem.h</itemPath>
+      <itemPath>duration.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+      <itemPath>inventory.txt</itemPath>
+      <itemPath>sales.txt</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>Date.c</itemPath>
       <itemPath>Inventory.c</itemPath>
       <itemPath>LinkedList.c</itemPath>
       <itemPath>Sales.c</itemPath>
       <itemPath>StockItem.c</itemPath>
       <itemPath>StockProgram.c</itemPath>
+      <itemPath>duration.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f3"
+                     displayName="Inventory"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/InventorySimpleTest.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="f1"
                      displayName="LinkedList"
                      projectFiles="true"
                      kind="TEST">
         <itemPath>tests/LinkedListSimpleTest.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2"
+                     displayName="StockItem"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/StockItemSimpleTest.c</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -53,6 +71,10 @@
           <standard>10</standard>
         </cTool>
       </compileType>
+      <item path="Date.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Date.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Inventory.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Inventory.h" ex="false" tool="3" flavor2="0">
@@ -71,6 +93,10 @@
       </item>
       <item path="StockProgram.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="duration.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="duration.h" ex="false" tool="3" flavor2="0">
+      </item>
       <folder path="TestFiles/f1">
         <cTool>
           <incDir>
@@ -86,7 +112,45 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f3">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f3</output>
+        </linkerTool>
+      </folder>
+      <item path="inventory.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="sales.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/InventorySimpleTest.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="tests/LinkedListSimpleTest.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tests/StockItemSimpleTest.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -110,6 +174,10 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="Date.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Date.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Inventory.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="Inventory.h" ex="false" tool="3" flavor2="0">
@@ -128,6 +196,10 @@
       </item>
       <item path="StockProgram.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="duration.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="duration.h" ex="false" tool="3" flavor2="0">
+      </item>
       <folder path="TestFiles/f1">
         <cTool>
           <incDir>
@@ -143,7 +215,45 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f3">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f3</output>
+        </linkerTool>
+      </folder>
+      <item path="inventory.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="sales.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/InventorySimpleTest.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="tests/LinkedListSimpleTest.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tests/StockItemSimpleTest.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
   </confs>
