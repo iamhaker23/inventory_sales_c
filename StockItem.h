@@ -41,16 +41,18 @@ extern "C" {
         int price_per_unit;
         int quantity;
         union description description;
+        char* original_line_def;
     } StockItem;
 
     
-    StockItem* new_item(char* line);
+    StockItem* item_new(char* line);
     int stockitem_is_cheaper_than(StockItem* a, StockItem* b);
-    void stockitem_as_string(StockItem* item, char* buffer);
-    int is_valid(char* type);
+    void stockitem_as_string(StockItem* item, char* buffer, int buffer_length);
     void normalise_capacitance(StockItem* item);
     void normalise_resistance(StockItem* item);
     int get_switch(char* type);
+    int stockitem_estimate_required_buffer(StockItem* item);
+    
 #ifdef __cplusplus
 }
 #endif

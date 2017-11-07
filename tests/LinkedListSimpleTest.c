@@ -32,7 +32,7 @@ void testNewList() {
 
     for (int i = 0; i < NUMBER_OF_ELEMENTS; i++)
     {
-       list_head_insert(list, rand()%100);
+        list_head_insert(list, get_data_type_int(rand()%100));
     }
     
     if (list_length(list) == NUMBER_OF_ELEMENTS){
@@ -52,13 +52,13 @@ void testListPopHead(){
     for (int i = 0; i != NUMBER_OF_ELEMENTS; i++)
     {
        //Will add 0..NUMBER_OF_ELEMENTS in reverse order
-       list_head_insert(list, i);
+       list_head_insert(list, get_data_type_int(i));
     }
     
     for(int j = 1; j <= NUMBER_OF_ELEMENTS; j++){
         
         
-        int poppedHead = list_pop_head(list);
+        int poppedHead = list_pop_head(list).int_val;
         //List contains NUMBER_OF_ELEMENTS..0 collected head first, e.g. NUMBER_OF_ELEMENTS..0
         int expectedValue = NUMBER_OF_ELEMENTS - j;
         
@@ -88,13 +88,13 @@ void testListPopTail(){
     for (int i = 0; i != NUMBER_OF_ELEMENTS; i++)
     {
        //Will add 0..NUMBER_OF_ELEMENTS in reverse order
-       list_head_insert(list, i);
+       list_head_insert(list, get_data_type_int(i));
     }
     
     for(int j = NUMBER_OF_ELEMENTS; j > 0; j--){
         
         
-        int poppedTail = list_pop_tail(list);
+        int poppedTail = list_pop_tail(list).int_val;
         //List contains NUMBER_OF_ELEMENTS..0 collected tail first, e.g. 0..NUMBER_OF_ELEMENTS
         int expectedValue = NUMBER_OF_ELEMENTS - j;
         
@@ -121,7 +121,7 @@ void testListGC(){
     for (int i = 0; i != NUMBER_OF_ELEMENTS; i++)
     {
        //Will add 0..NUMBER_OF_ELEMENTS in reverse order
-       list_head_insert(list, i);
+       list_head_insert(list, get_data_type_int(i));
     }
     
     int listSize = list_memory_size(list);
@@ -151,7 +151,7 @@ void testListAsString(){
     for (int i = 0; i != NUMBER_OF_ELEMENTS; i++)
     {
        //Will add 0..NUMBER_OF_ELEMENTS in reverse order
-       list_head_insert(list, i);
+       list_head_insert(list, get_data_type_int(i));
     }
     
     int string_buffer_size = list_estimate_required_buffer(list);
@@ -172,7 +172,7 @@ void testListSort(){
     for (int i = 0; i != NUMBER_OF_ELEMENTS; i++)
     {
        //Will add 0..NUMBER_OF_ELEMENTS in reverse order
-       list_head_insert(list, rand()%(NUMBER_OF_ELEMENTS*10));
+       list_head_insert(list, get_data_type_int(rand()%(NUMBER_OF_ELEMENTS*10)));
     }
     int string_buffer_size = list_estimate_required_buffer(list);
     char listAsString[string_buffer_size];

@@ -11,7 +11,7 @@
 
 #include "StockItem.h"
 
-StockItem* new_item(char* line){
+StockItem* item_new(char* line){
     const int MAX_FIELD_LENGTH = 20;
     
     //ONE MUST INITIALISE THE CHARACTER ARRAY BUFFERS OR THEY WILL REFERENCE ARBITRARY MEMORY!
@@ -20,7 +20,6 @@ StockItem* new_item(char* line){
     char quantity[20] = "\0";
     char price[20] = "\0";
     char desc[20] = "\0";
-    
     //sscanf(line, "%c,\t%c,\t%c,\t%c,\t%c\n", type, code, quantity, price, desc);
     
     
@@ -32,6 +31,7 @@ StockItem* new_item(char* line){
         char tmp = line[index++];
         if (tmp != '\n'){
             while (tmp != ',' & tmp != '\n'){
+                
                 //omit space, tab and quotes
                 if (tmp != ' ' & tmp != '\t' & tmp != '"'){
                     switch(i){
@@ -114,6 +114,14 @@ StockItem* new_item(char* line){
             exit(EXIT_FAILURE);
             break;
     }
+    
+    if (item != NULL){
+        char* original_line_ptr = (char*)malloc(strlen(line));
+        //remove \n char by copying only to length-1
+        strncpy(original_line_ptr, line, strlen(line)-1);
+        item->original_line_def = original_line_ptr;
+    }
+    
     return item;
 }
 
@@ -131,22 +139,31 @@ int get_switch(char* type){
     return output;
 }
 
+int stockitem_estimate_required_buffer(StockItem* item){
+    //Implementation will simply return the line used to generate the object
+    return (strlen(item->original_line_def))+1;
+    
+}
+
 int stockitem_is_cheaper_than(StockItem* a, StockItem* b){
-    
+    int return_value = (a->price_per_unit < b->price_per_unit) ? 1 : 0;
+    return_value = (a->price_per_unit > b->price_per_unit) ? -1 : return_value;
+    return return_value;
 }
 
-void stockitem_as_string(StockItem* item, char* buffer){
-    
-}
-
-int is_valid(char* type){
-    
+void stockitem_as_string(StockItem* item, char* buffer, int buffer_length){
+    int est = stockitem_estimate_required_buffer(item);
+    if (buffer_length < est ){
+        printf("Error: stockitem_as_string() attempted to load %d chars into %d long buffer.\n", est, buffer_length);
+    }
+    //strncpy(buffer, item->original_line_def, buffer_length);
+    snprintf(buffer, buffer_length, item->original_line_def);
 }
 
 void normalise_capacitance(StockItem* item){
-    int tmp_size = strlen(item->description.resistance.original);
+    int tmp_size = strlen(item->description.capacitance.original);
     char tmp[tmp_size];
-    strncpy(tmp, item->description.resistance.original, tmp_size);
+    strncpy(tmp, item->description.capacitance.original, tmp_size);
     
     int isAfterRadix = 0;
     double divisor = 1.0f;
@@ -184,7 +201,7 @@ void normalise_capacitance(StockItem* item){
                         break;
                     default:
                         //invalid char
-                        printf("Invalid char '%c' encountered when normalising resistance.\n", charCode);
+                        printf("Invalid char '%c' encountered when normalising capacitance %s.\n", charCode, tmp);
                         exit(EXIT_FAILURE);
                         break;
                 }
@@ -192,7 +209,7 @@ void normalise_capacitance(StockItem* item){
             }
         }
     }
-    item->description.resistance.normalised_resistance = value/divisor;
+    item->description.capacitance.normalised_capacitance = value/divisor;
 }
 
 void normalise_resistance(StockItem* item){
@@ -237,7 +254,7 @@ void normalise_resistance(StockItem* item){
                         break;
                     default:
                         //invalid char
-                        printf("Invalid char '%c' encountered when normalising resistance.\n", charCode);
+                        printf("Invalid char '%c' encountered when normalising resistance %s.\n", charCode, tmp);
                         exit(EXIT_FAILURE);
                         break;
                 }

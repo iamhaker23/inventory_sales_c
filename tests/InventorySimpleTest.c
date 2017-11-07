@@ -25,10 +25,34 @@
 
 const int NUMBER_OF_ELEMENTS = 10;
 
-void testCanLoadFromFile(){
-    printf("*****************************************InventorySimpleTest testCanLoadFromFile\n");
+void testCanAddItems(){
+    printf("*****************************************InventorySimpleTest testCanAddItems\n");
     
-    //printf("%%TEST_FAILED%% time=0 testname=testCanLoadFromFile (InventorySimpleTest) message=Failed to open file.\n");
+    Inventory* inventory = inventory_new();
+    
+    int testVal = inventory_count(inventory);
+    int expected = 0;
+    if (testVal != expected){
+        printf("%%TEST_FAILED%% time=0 testname=testCanLoadFromFile (InventorySimpleTest) message=Expected inventory count %d, got %d.\n", 0, testVal);
+    }
+    
+    StockItem* item = item_new("capacitor, CAP_15pF, 448, 8, 15pF\n");
+    inventory_add(inventory, item);
+    
+    testVal = inventory_count(inventory);
+    
+    expected = 1;
+    if (testVal != expected){
+        printf("%%TEST_FAILED%% time=0 testname=testCanLoadFromFile (InventorySimpleTest) message=Expected inventory count %d, got %d.\n", expected, testVal);
+    }
+    
+    //cannot add same product code twice!
+    inventory_add(inventory, item);
+    testVal = inventory_count(inventory);
+    expected = 1;
+    if (testVal != expected){
+        printf("%%TEST_FAILED%% time=0 testname=testCanLoadFromFile (InventorySimpleTest) message=Expected inventory count %d, got %d.\n", expected, testVal);
+    }
 }
 
 int main(int argc, char** argv) {
@@ -41,11 +65,11 @@ int main(int argc, char** argv) {
     
     //INIT CLOCK, RUN TEST AND CALCULATE DURATION
     start = clock();
-    printf("%%TEST_STARTED%% testListSort (InventorySimpleTest)\n");
-    testCanLoadFromFile();
+    printf("%%TEST_STARTED%% testCanAddItems (InventorySimpleTest)\n");
+    testCanAddItems();
     end = clock();
     duration = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("%%TEST_FINISHED%% time=%f testListSort (InventorySimpleTest) \n", duration);
+    printf("%%TEST_FINISHED%% time=%f testCanAddItems (InventorySimpleTest) \n", duration);
     
     
     //ADD TO TOTAL DURATION OF TEST SUITE

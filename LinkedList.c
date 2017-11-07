@@ -31,7 +31,7 @@ int list_length(List* list){
     return list->length;
 }
 
-void list_tail_insert(List* list, int value){
+void list_tail_insert(List* list, union data_type value){
     Node* tmp = (Node*)malloc(sizeof(Node));
     
     if (tmp == NULL){
@@ -53,7 +53,7 @@ void list_tail_insert(List* list, int value){
     list->length=list->length+1;
 }
 
-void list_head_insert(List* list, int value){
+void list_head_insert(List* list, union data_type value){
     Node* tmp = (Node*)malloc(sizeof(Node));
     
     if (tmp == NULL){
@@ -78,13 +78,13 @@ void list_head_insert(List* list, int value){
     
 }
 
-int list_pop_head(List* list){
+union data_type list_pop_head(List* list){
     if (list->first == NULL){
         printf("Error: attempted to pop head element from an empty list.\n");
         exit(EXIT_FAILURE);
     }
     
-    int value = list->first->value;
+    union data_type value = list->first->value;
     
     Node* head = list->first;
     
@@ -109,13 +109,13 @@ int list_pop_head(List* list){
     
 }
 
-int list_pop_tail(List* list){
+union data_type list_pop_tail(List* list){
     if (list->last == NULL){
         printf("Error: attempted to pop head element from an empty list.\n");
         exit(EXIT_FAILURE);
     }
     
-    int value = list->last->value;
+    union data_type value = list->last->value;
     
     Node* tail = list->last;
     
@@ -165,11 +165,11 @@ void list_sort(List* list, int ascending_flag){
             do{
                 sorted = 1;
                 for(Node* node = list->first; node->next != NULL; node=node->next){
-                    if (node->value > node->next->value)
+                    if (node->value.int_val > node->next->value.int_val )
                         {
-                           int tmp = node->value;
-                           node->value= node->next->value;
-                           node->next->value = tmp;
+                           long tmp = node->value.int_val ;
+                           node->value.int_val = node->next->value.int_val ;
+                           node->next->value.int_val  = tmp;
                            sorted = 0;
                         }
                 }
@@ -178,11 +178,11 @@ void list_sort(List* list, int ascending_flag){
             do{
                 sorted = 1;
                 for(Node* node = list->first; node->next != NULL; node=node->next){
-                    if (node->value < node->next->value)
+                    if (node->value.int_val  < node->next->value.int_val )
                         {
-                           int tmp = node->value;
-                           node->value= node->next->value;
-                           node->next->value = tmp;
+                           long tmp = node->value.int_val ;
+                           node->value.int_val = node->next->value.int_val ;
+                           node->next->value.int_val  = tmp;
                            sorted = 0;
                         }
                 }
@@ -237,4 +237,21 @@ int list_memory_size(List* list){
         node = node->next;
     }
     return listSize;
+}
+union data_type get_data_type_int(long value){
+    Node n;
+    n.value.int_val = value;
+    return n.value;
+}
+
+union data_type get_data_type_stockitem(StockItem* value){
+    Node n;
+    n.value.item = value;
+    return n.value;
+}
+
+union data_type get_data_type_sales(Sales* value){
+    Node n;
+    n.value.sales = value;
+    return n.value;
 }

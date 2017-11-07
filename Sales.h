@@ -15,7 +15,7 @@
 #define SALES_H
 
 #include "Date.h"
-#include "StockItem.h";
+#include "StockItem.h"
 
 #ifdef __cplusplus
 extern "C" {
