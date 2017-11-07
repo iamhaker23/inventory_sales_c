@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include "StockItem.h"
 
@@ -31,7 +32,8 @@ StockItem* new_item(char* line){
         char tmp = line[index++];
         if (tmp != '\n'){
             while (tmp != ',' & tmp != '\n'){
-                if (tmp != ' '){
+                //omit space, tab and quotes
+                if (tmp != ' ' & tmp != '\t' & tmp != '"'){
                     switch(i){
                        case(1):
                            snprintf(type, MAX_FIELD_LENGTH, "%s%c", type, tmp);
@@ -68,6 +70,7 @@ StockItem* new_item(char* line){
             item->quantity = atoi(quantity);
             item->product_code = code;
             item->description.resistance.original = desc;
+            normalise_resistance(item);
             item->type = type;
             break;
         case(1):
@@ -76,6 +79,7 @@ StockItem* new_item(char* line){
             item->quantity = atoi(quantity);
             item->product_code = code;
             item->description.capacitance.original = desc;
+            normalise_capacitance(item);
             item->type = type;
             break;
         case(2):
@@ -140,9 +144,106 @@ int is_valid(char* type){
 }
 
 void normalise_capacitance(StockItem* item){
+    int tmp_size = strlen(item->description.resistance.original);
+    char tmp[tmp_size];
+    strncpy(tmp, item->description.resistance.original, tmp_size);
     
+    int isAfterRadix = 0;
+    double divisor = 1.0f;
+    double value = 0.0f;
+    if (tmp != NULL){
+        for (int i = 0; i < tmp_size; i++){
+            char current = tmp[i];
+            int charCode = (int)current;
+            if (charCode > 47 & charCode < 58){
+                //charCode is a digit, add to the next decimal column
+                value = (value*10.0f) + (double)((int)charCode%48);
+            }else{
+                switch(charCode){
+                    case(112):
+                        //p
+                        divisor = pow(10.0f, 12.0f);
+                        break;
+                    case(110):
+                        //n
+                        divisor = pow(10.0f, 9.0f);
+                        break;
+                    case(117):
+                        //u
+                        divisor = pow(10.0f, 6.0f);
+                        break;
+                    case(109):
+                        //m
+                        divisor = pow(10.0f, 3.0f);
+                        break;
+                    case(70):
+                        //F
+                        break;
+                    case(102):
+                        //f
+                        break;
+                    default:
+                        //invalid char
+                        printf("Invalid char '%c' encountered when normalising resistance.\n", charCode);
+                        exit(EXIT_FAILURE);
+                        break;
+                }
+                
+            }
+        }
+    }
+    item->description.resistance.normalised_resistance = value/divisor;
 }
 
 void normalise_resistance(StockItem* item){
+    int tmp_size = strlen(item->description.resistance.original);
+    char tmp[tmp_size];
+    strncpy(tmp, item->description.resistance.original, tmp_size);
     
+    int isAfterRadix = 0;
+    double multiplier = 1.0f;
+    double value = 0.0f;
+    if (tmp != NULL){
+        for (int i = 0; i < tmp_size; i++){
+            char current = tmp[i];
+            int charCode = (int)current;
+            if (charCode > 47 & charCode < 58){
+                //charCode is a digit
+                if(isAfterRadix == 1){
+                    //Add the value, accounting for it's placement after the radix
+                    value = value + ((double)((int)charCode%48)/pow(10.0f, (double)isAfterRadix++));
+                }else{
+                    //Otherwise add next column before radix
+                    value = (value*10.0f) + (double)((int)charCode%48);
+                }
+            }else{
+                
+                switch(charCode){
+                    case(75):
+                        //K
+                        isAfterRadix = 1;
+                        multiplier = 1000.0f;
+                        
+                        break;
+                    case(77):
+                        //M
+                        isAfterRadix = 1;
+                        multiplier = 1000000.0f;
+                        break;
+                    case(82):
+                        //R
+                        isAfterRadix = 1;
+                        multiplier = 1.0f;
+                        break;
+                    default:
+                        //invalid char
+                        printf("Invalid char '%c' encountered when normalising resistance.\n", charCode);
+                        exit(EXIT_FAILURE);
+                        break;
+                }
+                
+            }
+        }
+    }
+    item->description.resistance.normalised_resistance = value*multiplier;
 }
