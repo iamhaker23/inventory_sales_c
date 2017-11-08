@@ -13,38 +13,32 @@
 
 #ifndef INVENTORY_H
 #define INVENTORY_H
-#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <limits.h>
-
 #include "StockItem.h"
-#include "LinkedList.h"
-#include "Date.h"
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     
-    typedef struct _Node{
+    typedef struct _INode{
         StockItem* item;
-        struct _Node* next;
-        struct _Node* previous;
-    } Node;
+        struct _INode* next;
+        struct _INode* previous;
+    } INode;
 
     typedef struct _Inventory{
-        Node* first;
+        INode* first;
         int length;
-        Node* last;
+        INode* last;
     } Inventory;
    
     //load from file
     void load_inventory(FILE* fd, Inventory* inventory);
     
     //Will add item and store pointer
-    int inventory_add(Inventory* inventory, StockItem* item);
+    void inventory_add(Inventory* inventory, StockItem* item);
     
     //helps when modifying stock levels per sale
     StockItem* get_item_by_product_code(Inventory* inventory, char* code);
@@ -54,27 +48,15 @@ extern "C" {
 
     Inventory* inventory_new();
 
-    //void inventory_fprint(Inventory* list, FILE* fd);
-
     void inventory_as_string(Inventory* list, char *tmp, int tmp_length);
 
     int inventory_length(Inventory* list);
 
-    void inventory_tail_insert(Inventory* list, union data_type value);
-
-    //void inventory_head_insert(Inventory* list, union data_type value);
-
-    //StockItem* inventory_pop_head(Inventory* list);
-
-    //StockItem* inventory_pop_tail(Inventory* list);
-
     void inventory_empty(Inventory* list);
 
-    void inventory_sort(Inventory* list, int ascending_flag, int type_sort);
+    void inventory_sort(Inventory* list, int ascending_flag);
 
     void inventory_gc(Inventory* list);
-
-    //int inventory_memory_size(Inventory* list);
 
     int inventory_estimate_required_buffer(Inventory* list);
 

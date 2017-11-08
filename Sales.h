@@ -15,31 +15,35 @@
 #define SALES_H
 
 #include "StockItem.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     
-    typedef struct Date{
+    typedef struct _Date{
         int dayOfMonth;
         int month;
         int year;
-    };
+    }Date;
     
-    typedef struct _Node{
+    typedef struct _SNode{
         StockItem* item;
-        Date date;
-        int quantity;
-        struct _Node* next;
-        struct _Node* previous;
-    } Node;
+        Date* date;
+        int* quantity;
+        struct _SNode* next;
+        struct _SNode* previous;
+    } SNode;
 
     typedef struct _Sales{
-        Node* first;
+        SNode* first;
         int length;
-        Node* last;
+        SNode* last;
     } Sales;
 
+    int datecmp(Date* a, Date* b);
+    
     Sales* sales_ledger_new();
 
     //void sales_ledger_fprint(Sales* list, FILE* fd);
@@ -48,7 +52,7 @@ extern "C" {
 
     int sales_ledger_length(Sales* list);
 
-    void sales_ledger_tail_insert(Sales* list, union data_type value);
+    void sales_ledger_tail_insert(Sales* list, StockItem* item, Date* date, int* quantity);
 
     //void sales_ledger_head_insert(Sales* list, union data_type value);
 
@@ -58,7 +62,7 @@ extern "C" {
 
     void sales_ledger_empty(Sales* list);
 
-    void sales_ledger_sort(Sales* list, int ascending_flag, int type_sort);
+    void sales_ledger_sort(Sales* list, int ascending_flag);
 
     void sales_ledger_gc(Sales* list);
 
