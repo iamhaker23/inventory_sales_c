@@ -16,6 +16,7 @@
                    projectFiles="true">
       <itemPath>inventory.txt</itemPath>
       <itemPath>sales.txt</itemPath>
+      <itemPath>test-data.txt</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -146,6 +147,8 @@
       </item>
       <item path="sales.txt" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="test-data.txt" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/InventorySimpleTest.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="tests/LinkedListSimpleTest.c" ex="false" tool="0" flavor2="0">
@@ -248,6 +251,8 @@
       <item path="inventory.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sales.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test-data.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/InventorySimpleTest.c" ex="false" tool="0" flavor2="0">
       </item>

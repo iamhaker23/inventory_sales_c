@@ -33,28 +33,51 @@ StockItem* item_new(char* line){
             while (tmp != ',' & tmp != '\n'){
                 
                 //omit space, tab and quotes
-                if (tmp != ' ' & tmp != '\t' & tmp != '"'){
+                if (tmp != ' ' && tmp != '\t' && tmp != '"'){
                     switch(i){
                        case(1):
                            snprintf(type, MAX_FIELD_LENGTH, "%s%c", type, tmp);
+                           tmp = line[index++];
+                           if (tmp == ',' || tmp == '\n'){
+                                snprintf(type, MAX_FIELD_LENGTH, "%s%c", type, '\0');
+                           }
                            break;
                        case(2):
                            snprintf(code, MAX_FIELD_LENGTH, "%s%c", code, tmp);
+                           tmp = line[index++];
+                           if (tmp == ',' || tmp == '\n'){
+                                snprintf(code, MAX_FIELD_LENGTH, "%s%c", code, '\0');
+                           }
                            break;
                        case(3):
                            snprintf(quantity, MAX_FIELD_LENGTH, "%s%c", quantity, tmp);
+                           tmp = line[index++];
+                           if (tmp == ',' || tmp == '\n'){
+                                snprintf(quantity, MAX_FIELD_LENGTH, "%s%c", quantity, '\0');
+                           }
                            break;
                        case(4):
                            snprintf(price, MAX_FIELD_LENGTH, "%s%c", price, tmp);
+                           tmp = line[index++];
+                           if (tmp == ',' || tmp == '\n'){
+                                snprintf(price, MAX_FIELD_LENGTH, "%s%c", price, '\0');
+                           }
                            break;
                        case(5):
                            snprintf(desc, MAX_FIELD_LENGTH, "%s%c", desc, tmp);
+                           tmp = line[index++];
+                           if (tmp == ',' || tmp == '\n'){
+                                snprintf(desc, MAX_FIELD_LENGTH, "%s%c", desc, '\0');
+                           }
                            break;
                        default:
+                           tmp = line[index++];
                            break;
                     }
+                }else{
+                    tmp = line[index++];
                 }
-                tmp = line[index++];
+                
             }
         }
     }
@@ -66,48 +89,48 @@ StockItem* item_new(char* line){
     switch(type_switch){
         case(0):
             item = (StockItem*)malloc(sizeof(StockItem));
-            item->price_per_unit = atoi(price);
-            item->quantity = atoi(quantity);
-            item->product_code = code;
-            item->description.resistance.original = desc;
+            item->price_per_unit = int_malloc(price);
+            item->quantity = int_malloc(quantity);
+            item->product_code = str_malloc(code, 0);
+            item->description.resistance.original = str_malloc(desc, 0);
             normalise_resistance(item);
-            item->type = type;
+            item->type = str_malloc(type, 0);
             break;
         case(1):
             item = (StockItem*)malloc(sizeof(StockItem));
-            item->price_per_unit = atoi(price);
-            item->quantity = atoi(quantity);
-            item->product_code = code;
-            item->description.capacitance.original = desc;
+            item->price_per_unit = int_malloc(price);
+            item->quantity = int_malloc(quantity);
+            item->product_code = str_malloc(code, 0);
+            item->description.capacitance.original = str_malloc(desc, 0);
             normalise_capacitance(item);
-            item->type = type;
+            item->type = str_malloc(type, 0);
             break;
         case(2):
             item = (StockItem*)malloc(sizeof(StockItem));
-            item->price_per_unit = atoi(price);
-            item->quantity = atoi(quantity);
-            item->product_code = code;
+            item->price_per_unit = int_malloc(price);
+            item->quantity = int_malloc(quantity);
+            item->product_code = str_malloc(code, 0);
             
             //One NULL to rule them all, one NULL to find them, One NULL to bring them all and in the darkness bind them.
             item->description.transistor_config = NULL;
             
-            item->type = type;
+            item->type = str_malloc(type, 0);
             break;
         case(3):
             item = (StockItem*)malloc(sizeof(StockItem));
-            item->price_per_unit = atoi(price);
-            item->quantity = atoi(quantity);
-            item->product_code = code;
-            item->description.transistor_config = desc;
-            item->type = type;
+            item->price_per_unit = int_malloc(price);
+            item->quantity = int_malloc(quantity);
+            item->product_code = str_malloc(code, 0);
+            item->description.transistor_config = str_malloc(desc, 0);
+            item->type = str_malloc(type, 0);
             break;
         case(4):
             item = (StockItem*)malloc(sizeof(StockItem));
-            item->price_per_unit = atoi(price);
-            item->quantity = atoi(quantity);
-            item->product_code = code;
-            item->description.ic_desc = desc;
-            item->type = type;
+            item->price_per_unit = int_malloc(price);
+            item->quantity = int_malloc(quantity);
+            item->product_code = str_malloc(code, 0);
+            item->description.ic_desc = str_malloc(desc, 0);
+            item->type = str_malloc(type, 0);
             break;
         default:
             printf("Unknown type: %s\n", type);
@@ -116,13 +139,25 @@ StockItem* item_new(char* line){
     }
     
     if (item != NULL){
-        char* original_line_ptr = (char*)malloc(strlen(line));
-        //remove \n char by copying only to length-1
-        strncpy(original_line_ptr, line, strlen(line)-1);
-        item->original_line_def = original_line_ptr;
+        item->original_line_def = str_malloc(line, -1);
     }
     
+    
     return item;
+}
+
+char* str_malloc(char* value, int length_modifier){
+    
+    char* new_ptr = (char*)malloc(strlen(value));
+    strncpy(new_ptr, value, strlen(value)+length_modifier);
+    return new_ptr;
+}
+
+int* int_malloc(char* value){
+    int converted = atoi(value);
+    int* new_ptr = (int*)malloc(sizeof(converted));
+    new_ptr = (int*)converted;
+    return new_ptr;
 }
 
 int get_switch(char* type){

@@ -239,19 +239,19 @@ int list_memory_size(List* list){
     return listSize;
 }
 union data_type get_data_type_int(long value){
-    Node n;
-    n.value.int_val = value;
-    return n.value;
+    union data_type obj;
+    obj.int_val = value;
+    return obj;
 }
 
 union data_type get_data_type_stockitem(StockItem* value){
-    Node n;
-    n.value.item = value;
-    return n.value;
+    union data_type obj;
+    obj.item = value;
+    return obj;
 }
 
 union data_type get_data_type_sales(Sales* value){
-    Node n;
-    n.value.sales = value;
-    return n.value;
+    union data_type obj;
+    obj.sales = value;
+    return obj;
 }

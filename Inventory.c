@@ -25,12 +25,14 @@
     }
 
     //Will add item and store pointer
-    void inventory_add(Inventory* inventory, StockItem* item){
+    int inventory_add(Inventory* inventory, StockItem* item){
         
         if (get_item_by_product_code(inventory, item->product_code) != NULL){
             printf("Error: product already exists with code: %s.\n", item->product_code);
+            return -1;
         }else{
             list_tail_insert(inventory->inventory_items, get_data_type_stockitem(item));
+            return 1;
         }
     }
 
@@ -85,19 +87,20 @@
         }
 
         if (inventory_count(inventory) == 0){
-            snprintf(tmp, sizeof(tmp), "List is empty.");
+            snprintf(tmp, tmp_length, "List is empty.");
+            
         }else{
-            snprintf(tmp, sizeof(tmp), "( ");
+            snprintf(tmp, tmp_length, "( ");
             Node* current = inventory->inventory_items->first;
             while(current != NULL){
                 StockItem* item = current->value.item;
                 int buffer_length = stockitem_estimate_required_buffer(item);
-                char* item_as_string[buffer_length];
+                char item_as_string[buffer_length];
                 stockitem_as_string(item, item_as_string, buffer_length);
-                snprintf(tmp + strlen(tmp), sizeof(tmp), (current->next==NULL) ?"[%s]" : "[%s], ", item_as_string);
+                snprintf(tmp + strlen(tmp), tmp_length, (current->next==NULL) ?"[%s]" : "[%s], ", item_as_string);
                 current = current->next;
             }
-            snprintf(tmp + strlen(tmp), sizeof(tmp), " )", inventory->inventory_items);
+            snprintf(tmp + strlen(tmp),tmp_length, " )", inventory->inventory_items);
         }
     }
     

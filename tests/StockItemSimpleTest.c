@@ -31,23 +31,24 @@ void testCanCreateFromLine() {
     printf("StockItemSimpleTest testCanCreateFromLine\n");
     
     StockItem* test = item_new("resistor, code, 10, 99, 10R1\n");
+    
     char* expected = "10R1";
     char* testVal = test->description.resistance.original;
-    int asExpected = strcmp(expected, testVal);
+    int asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
     
     expected = "resistor";
     testVal = test->type;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
     
     expected = "code";
     testVal = test->product_code;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
@@ -76,14 +77,14 @@ void testCanCreateFromLine() {
     
     expected = "diode";
     testVal = test->type;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
     
     expected = "1N4148";
     testVal = test->product_code;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
@@ -102,21 +103,21 @@ void testCanCreateFromLine() {
     test = item_new("transistor,	AC125,	13,	35,	PNP\n");
     expected = "PNP";
     testVal = test->description.transistor_config;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
     
     expected = "transistor";
     testVal = test->type;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
     
     expected = "AC125";
     testVal = test->product_code;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
@@ -131,25 +132,62 @@ void testCanCreateFromLine() {
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %d \ngot\n\t %d.\n", 99, test->price_per_unit);
     }
     
+    test = item_new("capacitor, CAP_1500nF, 796, 68, 1500nF\n");
+    expected = "1500nF";
+    testVal = test->description.capacitance.original;
+    asExpected = strncmp(expected, testVal, strlen(expected));
+    if (asExpected != 0){
+        printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
+    }
+    
+    asExpected = (test->description.capacitance.normalised_capacitance == 0.000001500f)? 0 : 1;
+    if (asExpected != 0){
+        printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %d \ngot\n\t %d.\n", 0.000001500f, test->description.capacitance.normalised_capacitance);
+    }
+    
+    expected = "capacitor";
+    testVal = test->type;
+    asExpected = strncmp(expected, testVal, strlen(expected));
+    if (asExpected != 0){
+        printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
+    }
+    
+    expected = "CAP_1500nF";
+    testVal = test->product_code;
+    asExpected = strncmp(expected, testVal, strlen(expected));
+    if (asExpected != 0){
+        printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
+    }
+    
+    asExpected = (test->quantity == 796) ? 0 : -1;
+    if (asExpected != 0){
+        printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %d \ngot\n\t %d.\n", 10, test->quantity);
+    }
+    
+    asExpected = (test->price_per_unit == 68) ? 0 : -1;
+    if (asExpected != 0){
+        printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %d \ngot\n\t %d.\n", 99, test->price_per_unit);
+    }
+    
     
     test = item_new(    "IC, NE555,  8, 17,  \"Timer\"\n");
     expected = "Timer";
     testVal = test->description.ic_desc;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
     
     expected = "IC";
     testVal = test->type;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
     
     expected = "NE555";
     testVal = test->product_code;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
@@ -169,9 +207,10 @@ void testCanNormaliseResistances(){
     printf("StockItemSimpleTest testCanNormaliseResistances\n");
     
     StockItem* test = item_new("resistor, code, 10, 99, 10R1\n");
+    
     char* expected = "10R1";
     char* testVal = test->description.resistance.original;
-    int asExpected = strcmp(expected, testVal);
+    int asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
@@ -183,7 +222,7 @@ void testCanNormaliseResistances(){
     test = item_new("resistor, code, 10, 99, 60K4\n");
     expected = "60K4";
     testVal = test->description.resistance.original;
-    asExpected = strcmp(expected, testVal);
+    asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
@@ -212,7 +251,7 @@ void testCanNormaliseCapacitance(){
     StockItem* test = item_new("capacitor, CAP_1500nF, 796, 68, 1500nF\n");
     char* expected = "1500nF";
     char* testVal = test->description.capacitance.original;
-    int asExpected = strcmp(expected, testVal);
+    int asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
@@ -224,7 +263,7 @@ void testCanNormaliseCapacitance(){
     test = item_new("capacitor, CAP_130uF, 503, 93, 130uF\n");
     expected = "130uF";
     testVal = test->description.capacitance.original;
-    asExpected = strcmp(expected, testVal);
+    asExpected = asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
@@ -236,7 +275,7 @@ void testCanNormaliseCapacitance(){
     test = item_new("capacitor, CAP_15pF, 448, 8, 15pF\n");
     expected = "15pF";
     testVal = test->description.capacitance.original;
-    asExpected = strcmp(expected, testVal);
+    asExpected = asExpected = strncmp(expected, testVal, strlen(expected));
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
@@ -286,6 +325,17 @@ void testCanDetermineCheaperStockItem(){
     asExpected = (stockitem_is_cheaper_than(test2, test)==-1)?0:-1;
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanDetermineCheaperStockItem (StockItemSimpleTest) message=Could not determine cheaper stock item, %d -> %d.\n", testb, testa);
+    }
+    
+}
+
+void testCanDetermineValidItem(){
+    StockItem* test = item_new("resistor, code, 10, 99, 10R1\n");
+    char* expected = "10R1";
+    char* testVal = test->description.resistance.original;
+    int asExpected = asExpected = strncmp(expected, testVal, strlen(expected));
+    if (asExpected != 0){
+        printf("%%TEST_FAILED%% time=0 testname=testCanCreateFromLine (StockItemSimpleTest) message=failed to create StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
     }
     
 }

@@ -41,7 +41,7 @@ extern "C" {
     void load_inventory(FILE* fd, Inventory* inventory);
     
     //Will add item and store pointer
-    void inventory_add(Inventory* inventory, StockItem* item);
+    int inventory_add(Inventory* inventory, StockItem* item);
     
     //helps when modifying stock levels per sale
     StockItem* get_item_by_product_code(Inventory* inventory, char* code);
