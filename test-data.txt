@@ -1,7 +1,0 @@
-*************StockItem
-"resistor, code, 10, 99, 10R1\n"
-"diode, 1N4148,  201, 5\n"
-"transistor,	AC125,	13,	35,	PNP\n"
-"IC, NE555,  8, 17,  \"Timer\"\n"
-"resistor, code, 10, 99, 10R1\n"
-"capacitor, CAP_1500nF, 796, 68, 1500nF\n"

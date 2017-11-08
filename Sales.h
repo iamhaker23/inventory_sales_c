@@ -14,21 +14,57 @@
 #ifndef SALES_H
 #define SALES_H
 
-#include "Date.h"
 #include "StockItem.h"
-#include "LinkedList.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
     
+    typedef struct Date{
+        int dayOfMonth;
+        int month;
+        int year;
+    };
+    
+    typedef struct _Node{
+        StockItem* item;
+        Date date;
+        int quantity;
+        struct _Node* next;
+        struct _Node* previous;
+    } Node;
+
     typedef struct _Sales{
-        List* sales_ledger;
-    }Sales;
-    
-    
+        Node* first;
+        int length;
+        Node* last;
+    } Sales;
+
+    Sales* sales_ledger_new();
+
+    //void sales_ledger_fprint(Sales* list, FILE* fd);
+
+    //void sales_ledger_as_string(Sales* list, char *tmp, int tmp_length);
+
+    int sales_ledger_length(Sales* list);
+
+    void sales_ledger_tail_insert(Sales* list, union data_type value);
+
+    //void sales_ledger_head_insert(Sales* list, union data_type value);
+
+    //union data_type sales_ledger_pop_head(Sales* list);
+
+    //union data_type sales_ledger_pop_tail(Sales* list);
+
+    void sales_ledger_empty(Sales* list);
+
+    void sales_ledger_sort(Sales* list, int ascending_flag, int type_sort);
+
+    void sales_ledger_gc(Sales* list);
+
+    //int sales_ledger_memory_size(Sales* list);
+
+    //int sales_ledger_estimate_required_buffer(Sales* list);
 
 
 #ifdef __cplusplus

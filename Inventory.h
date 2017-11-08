@@ -28,13 +28,18 @@
 extern "C" {
 #endif
     
-    
+    typedef struct _Node{
+        StockItem* item;
+        struct _Node* next;
+        struct _Node* previous;
+    } Node;
+
     typedef struct _Inventory{
-        List* inventory_items;
-    }Inventory;
-    
-    Inventory* inventory_new();
-    
+        Node* first;
+        int length;
+        Node* last;
+    } Inventory;
+   
     //load from file
     void load_inventory(FILE* fd, Inventory* inventory);
     
@@ -46,16 +51,33 @@ extern "C" {
     
     //helps determine total stock level of NPN transistors
     int count_type_matching_description(Inventory* inventory, char* type, char* description);
-    
-    //sort by price ascending
-    void inventory_sort_by_price(Inventory* inventory, int ascending_flag);
-    
-    int inventory_count(Inventory* inventory);
-    
-    
-    void inventory_fprint(Inventory* inventory, FILE* fd);
-    void inventory_as_string(Inventory* inventory, char* tmp, int tmp_length);
-    int inventory_estimate_required_buffer(Inventory* inventory);
+
+    Inventory* inventory_new();
+
+    //void inventory_fprint(Inventory* list, FILE* fd);
+
+    void inventory_as_string(Inventory* list, char *tmp, int tmp_length);
+
+    int inventory_length(Inventory* list);
+
+    void inventory_tail_insert(Inventory* list, union data_type value);
+
+    //void inventory_head_insert(Inventory* list, union data_type value);
+
+    //StockItem* inventory_pop_head(Inventory* list);
+
+    //StockItem* inventory_pop_tail(Inventory* list);
+
+    void inventory_empty(Inventory* list);
+
+    void inventory_sort(Inventory* list, int ascending_flag, int type_sort);
+
+    void inventory_gc(Inventory* list);
+
+    //int inventory_memory_size(Inventory* list);
+
+    int inventory_estimate_required_buffer(Inventory* list);
+
 
 #ifdef __cplusplus
 }
