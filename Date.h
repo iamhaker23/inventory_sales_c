@@ -11,18 +11,24 @@
  * Created on 05 November 2017, 14:03
  */
 
+
 #ifndef DATE_H
 #define DATE_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+    
+    
     typedef struct _Date{
         int dayOfMonth;
         int month;
         int year;
     } Date;
+    
+    //if first is later, return days ahead
+    //if first is earlier, return days behind
+    int datecmp(Date date1, Date date2);
 
 #ifdef __cplusplus
 }

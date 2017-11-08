@@ -38,6 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Date.o \
 	${OBJECTDIR}/Inventory.o \
 	${OBJECTDIR}/LinkedList.o \
+	${OBJECTDIR}/Record.o \
 	${OBJECTDIR}/Sales.o \
 	${OBJECTDIR}/StockItem.o \
 	${OBJECTDIR}/StockProgram.o \
@@ -96,6 +97,11 @@ ${OBJECTDIR}/LinkedList.o: LinkedList.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -std=c11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/LinkedList.o LinkedList.c
+
+${OBJECTDIR}/Record.o: Record.c
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -std=c11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Record.o Record.c
 
 ${OBJECTDIR}/Sales.o: Sales.c
 	${MKDIR} -p ${OBJECTDIR}
@@ -192,6 +198,19 @@ ${OBJECTDIR}/LinkedList_nomain.o: ${OBJECTDIR}/LinkedList.o LinkedList.c
 	    $(COMPILE.c) -O2 -std=c11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/LinkedList_nomain.o LinkedList.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/LinkedList.o ${OBJECTDIR}/LinkedList_nomain.o;\
+	fi
+
+${OBJECTDIR}/Record_nomain.o: ${OBJECTDIR}/Record.o Record.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/Record.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.c) -O2 -std=c11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Record_nomain.o Record.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/Record.o ${OBJECTDIR}/Record_nomain.o;\
 	fi
 
 ${OBJECTDIR}/Sales_nomain.o: ${OBJECTDIR}/Sales.o Sales.c 

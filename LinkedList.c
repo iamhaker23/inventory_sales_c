@@ -157,7 +157,7 @@ void list_gc(List* list){
     free(list);
 }
 
-void list_sort(List* list, int ascending_flag){
+void list_sort(List* list, int ascending_flag, int type_sort){
     if(list->first != list->last){
         //list contains more than one item
         int sorted;
@@ -165,26 +165,76 @@ void list_sort(List* list, int ascending_flag){
             do{
                 sorted = 1;
                 for(Node* node = list->first; node->next != NULL; node=node->next){
-                    if (node->value.int_val > node->next->value.int_val )
-                        {
-                           long tmp = node->value.int_val ;
-                           node->value.int_val = node->next->value.int_val ;
-                           node->next->value.int_val  = tmp;
-                           sorted = 0;
-                        }
+                    switch(type_sort){
+                        case(1):
+                            if (node->value.int_val > node->next->value.int_val ){
+                               long tmp = node->value.int_val ;
+                               node->value.int_val = node->next->value.int_val ;
+                               node->next->value.int_val  = tmp;
+                               sorted = 0;
+                            }
+                            break;
+                            
+                        case(2):
+                            if (node->value.item->price_per_unit > node->next->value.item->price_per_unit ){
+                               StockItem* tmp = node->value.item ;
+                               node->value.item = node->next->value.item;
+                               node->next->value.item  = tmp;
+                               sorted = 0;
+                            }
+                            break;
+                            
+                        case(3):
+                            if (datecmp(node->value.sale->date, node->next->value.sale->date) > 0 ){
+                               Record* tmp = node->value.sale ;
+                               node->value.sale = node->next->value.sale ;
+                               node->next->value.sale  = tmp;
+                               sorted = 0;
+                            }
+                            break;
+                        default:
+                            printf("Error: expected valid type_sort (1: int_val, 2: StockItem.price, 3:Sales.date) got %d.\n", type_sort);
+                            exit(EXIT_FAILURE);
+                            break;
+                    }
                 }
             }while(!sorted);
         }else{
             do{
                 sorted = 1;
                 for(Node* node = list->first; node->next != NULL; node=node->next){
-                    if (node->value.int_val  < node->next->value.int_val )
-                        {
-                           long tmp = node->value.int_val ;
-                           node->value.int_val = node->next->value.int_val ;
-                           node->next->value.int_val  = tmp;
-                           sorted = 0;
-                        }
+                    switch(type_sort){
+                        case(1):
+                            if (node->value.int_val < node->next->value.int_val ){
+                               long tmp = node->value.int_val ;
+                               node->value.int_val = node->next->value.int_val ;
+                               node->next->value.int_val  = tmp;
+                               sorted = 0;
+                            }
+                            break;
+                            
+                        case(2):
+                            if (node->value.item->price_per_unit < node->next->value.item->price_per_unit ){
+                               StockItem* tmp = node->value.item ;
+                               node->value.item = node->next->value.item;
+                               node->next->value.item  = tmp;
+                               sorted = 0;
+                            }
+                            break;
+                            
+                        case(3):
+                            if (datecmp(node->value.sale->date, node->next->value.sale->date) < 0 ){
+                               Record* tmp = node->value.sale ;
+                               node->value.sale = node->next->value.sale ;
+                               node->next->value.sale  = tmp;
+                               sorted = 0;
+                            }
+                            break;
+                        default:
+                            printf("Error: expected valid type_sort (1: int_val, 2: StockItem.price, 3:Sales.date) got %d.\n", type_sort);
+                            exit(EXIT_FAILURE);
+                            break;
+                    }
                 }
             }while(!sorted);
         }
@@ -250,8 +300,8 @@ union data_type get_data_type_stockitem(StockItem* value){
     return obj;
 }
 
-union data_type get_data_type_sales(Sales* value){
+union data_type get_data_type_sales(Record* value){
     union data_type obj;
-    obj.sales = value;
+    obj.sale = value;
     return obj;
 }

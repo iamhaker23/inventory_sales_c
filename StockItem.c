@@ -29,8 +29,8 @@ StockItem* item_new(char* line){
     
     for (int i = 1; i <= NUM_FIELDS; i++){
         char tmp = line[index++];
-        if (tmp != '\n'){
-            while (tmp != ',' & tmp != '\n'){
+        if (tmp != '\n' && tmp != '\r'){
+            while (tmp != ',' && tmp != '\n' && tmp != '\r'){
                 
                 //omit space, tab and quotes
                 if (tmp != ' ' && tmp != '\t' && tmp != '"'){
@@ -38,35 +38,35 @@ StockItem* item_new(char* line){
                        case(1):
                            snprintf(type, MAX_FIELD_LENGTH, "%s%c", type, tmp);
                            tmp = line[index++];
-                           if (tmp == ',' || tmp == '\n'){
+                           if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                 snprintf(type, MAX_FIELD_LENGTH, "%s%c", type, '\0');
                            }
                            break;
                        case(2):
                            snprintf(code, MAX_FIELD_LENGTH, "%s%c", code, tmp);
                            tmp = line[index++];
-                           if (tmp == ',' || tmp == '\n'){
+                           if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                 snprintf(code, MAX_FIELD_LENGTH, "%s%c", code, '\0');
                            }
                            break;
                        case(3):
                            snprintf(quantity, MAX_FIELD_LENGTH, "%s%c", quantity, tmp);
                            tmp = line[index++];
-                           if (tmp == ',' || tmp == '\n'){
+                           if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                 snprintf(quantity, MAX_FIELD_LENGTH, "%s%c", quantity, '\0');
                            }
                            break;
                        case(4):
                            snprintf(price, MAX_FIELD_LENGTH, "%s%c", price, tmp);
                            tmp = line[index++];
-                           if (tmp == ',' || tmp == '\n'){
+                           if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                 snprintf(price, MAX_FIELD_LENGTH, "%s%c", price, '\0');
                            }
                            break;
                        case(5):
                            snprintf(desc, MAX_FIELD_LENGTH, "%s%c", desc, tmp);
                            tmp = line[index++];
-                           if (tmp == ',' || tmp == '\n'){
+                           if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                 snprintf(desc, MAX_FIELD_LENGTH, "%s%c", desc, '\0');
                            }
                            break;
@@ -176,6 +176,9 @@ int get_switch(char* type){
 
 int stockitem_estimate_required_buffer(StockItem* item){
     //Implementation will simply return the line used to generate the object
+    if (item == NULL){
+        return (sizeof(char)*6);
+    }
     return (strlen(item->original_line_def))+1;
     
 }
@@ -187,6 +190,12 @@ int stockitem_is_cheaper_than(StockItem* a, StockItem* b){
 }
 
 void stockitem_as_string(StockItem* item, char* buffer, int buffer_length){
+    
+    if (item == NULL){
+        snprintf(buffer, buffer_length, "NULL\0");
+        return;
+    }
+    
     int est = stockitem_estimate_required_buffer(item);
     if (buffer_length < est ){
         printf("Error: stockitem_as_string() attempted to load %d chars into %d long buffer.\n", est, buffer_length);

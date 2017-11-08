@@ -21,11 +21,30 @@
 
     //load from file
     void load_inventory(FILE* fd, Inventory* inventory){
-
+        if (fd != NULL){
+            size_t line_buff_size = 100;
+            size_t read = 0;
+            char line[line_buff_size];
+            char* line_ptr = line;
+            
+            while((read = (getline(&line_ptr, &line_buff_size, fd))) && read!=-1 ){
+                StockItem* item = item_new(line);
+                inventory_add(inventory, item);
+            }
+            
+        }else{
+            printf("Error: NULL file provided.");
+            exit(EXIT_FAILURE);
+        }
     }
 
     //Will add item and store pointer
     int inventory_add(Inventory* inventory, StockItem* item){
+        
+        if (item == NULL){
+            printf("Cannot add NULL to inventory.\n");
+            return -1;
+        }
         
         if (get_item_by_product_code(inventory, item->product_code) != NULL){
             printf("Error: product already exists with code: %s.\n", item->product_code);
@@ -53,18 +72,35 @@
     }
 
     //helps determine total stock level of NPN transistors
-    int count_type_matching_description(char* type, char* description){
-
+    int count_type_matching_description(Inventory* inventory, char* type, char* description){
+        int output = 0;
+        
+        Node* current = inventory->inventory_items->first;
+        while(current != NULL){
+            int type_switch = get_switch(type);
+            switch(type_switch){
+                //only implemented for transistors
+                case(3):
+                    if(strncmp(current->value.item->type, type, strlen(type)) == 0){
+                        if(strncmp(current->value.item->description.transistor_config, description, strlen(description)) == 0){
+                            output++;
+                        }
+                    }
+                    break;
+                default:
+                    printf("Error: count type matching description is not implemented for %s (typeswitch:%d).\n", type, type_switch);
+                    return -1;
+                    break;
+            }
+            current = current->next;
+        }
+        
+        return output;
     }
 
     //sort by price ascending
-    void inventory_sort_by_price_asc(Inventory* inventory){
-
-    }
-
-    //helps when determining highest sales volume
-    int inventory_sales_volume_for_date(Inventory* inventory, Date* date){
-
+    void inventory_sort_by_price(Inventory* inventory, int ascending_flag){
+        list_sort(inventory->inventory_items, ascending_flag, 2);
     }
     
     int inventory_count(Inventory* inventory){

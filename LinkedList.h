@@ -16,8 +16,7 @@
 
 #include <stdint.h>
 #include "StockItem.h"
-#include "Sales.h"
-
+#include "Record.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +24,7 @@ extern "C" {
     
     union data_type{
         StockItem* item;
-        Sales* sales;
+        Record* sale;
         long int_val;
     };
     
@@ -59,7 +58,7 @@ union data_type list_pop_tail(List* list);
 
 void list_empty(List* list);
 
-void list_sort(List* list, int ascendingFlag);
+void list_sort(List* list, int ascending_flag, int type_sort);
 
 void list_gc(List* list);
 
@@ -69,7 +68,7 @@ int list_estimate_required_buffer(List* list);
 
 union data_type get_data_type_int(long value);
 union data_type get_data_type_stockitem(StockItem* value);
-union data_type get_data_type_sales(Sales* value);
+union data_type get_data_type_sales(Record* value);
 
 #ifdef __cplusplus
 }

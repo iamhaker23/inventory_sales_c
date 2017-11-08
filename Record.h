@@ -5,35 +5,31 @@
  */
 
 /* 
- * File:   Sales.h
+ * File:   Record.h
  * Author: Hakeem
  *
- * Created on 03 November 2017, 12:07
+ * Created on 08 November 2017, 18:10
  */
 
-#ifndef SALES_H
-#define SALES_H
-
 #include "Date.h"
-#include "StockItem.h"
-#include "LinkedList.h"
+
+#ifndef RECORD_H
+#define RECORD_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-    
-    typedef struct _Sales{
-        List* sales_ledger;
-    }Sales;
-    
-    
-
+    typedef struct _Record{
+        Date date;
+        StockItem item;
+        int quantity;
+    }Record;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* SALES_H */
+#endif /* RECORD_H */
 

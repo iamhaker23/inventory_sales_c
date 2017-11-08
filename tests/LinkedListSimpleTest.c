@@ -179,13 +179,13 @@ void testListSort(){
     list_as_string(list, listAsString, string_buffer_size);
     printf("List before sorting: %s\n", listAsString);
     
-    list_sort(list, 0);
+    list_sort(list, 0, 1);
     
     list_as_string(list, listAsString, string_buffer_size);
     printf("List after sorting (desc): %s\n", listAsString);
     
     
-    list_sort(list, 1);
+    list_sort(list, 1, 1);
     
     list_as_string(list, listAsString, string_buffer_size);
     printf("List after sorting (asc): %s\n", listAsString);

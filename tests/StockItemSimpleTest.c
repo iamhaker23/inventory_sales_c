@@ -299,6 +299,17 @@ void testCanStringifyStockItem(){
     if (asExpected != 0){
         printf("%%TEST_FAILED%% time=0 testname=testCanStringifyStockItem (StockItemSimpleTest) message=failed to stringify StockItem, expected\n\t %s \ngot\n\t %s \nfrom \n\t%s.\n", expected, testVal, test->original_line_def);
     }
+    
+    test = NULL;
+    buffer_length = stockitem_estimate_required_buffer(test);
+    testVal[buffer_length];
+    stockitem_as_string(test, (char*)testVal, buffer_length);
+    expected = "NULL\0";
+    asExpected = strncmp(expected, testVal, strlen(expected));
+    if (asExpected != 0){
+        printf("%%TEST_FAILED%% time=0 testname=testCanStringifyStockItem (StockItemSimpleTest) message=failed to stringify StockItem, expected\n\t %s \ngot\n\t %s.\n", expected, testVal);
+    }
+    
 }
     
 void testCanDetermineCheaperStockItem(){

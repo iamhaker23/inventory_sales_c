@@ -7,6 +7,7 @@
       <itemPath>Date.h</itemPath>
       <itemPath>Inventory.h</itemPath>
       <itemPath>LinkedList.h</itemPath>
+      <itemPath>Record.h</itemPath>
       <itemPath>Sales.h</itemPath>
       <itemPath>StockItem.h</itemPath>
       <itemPath>duration.h</itemPath>
@@ -24,6 +25,7 @@
       <itemPath>Date.c</itemPath>
       <itemPath>Inventory.c</itemPath>
       <itemPath>LinkedList.c</itemPath>
+      <itemPath>Record.c</itemPath>
       <itemPath>Sales.c</itemPath>
       <itemPath>StockItem.c</itemPath>
       <itemPath>StockProgram.c</itemPath>
@@ -83,6 +85,10 @@
       <item path="LinkedList.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="LinkedList.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Record.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Record.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Sales.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -188,6 +194,10 @@
       <item path="LinkedList.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="LinkedList.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Record.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="Record.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Sales.c" ex="false" tool="0" flavor2="0">
       </item>

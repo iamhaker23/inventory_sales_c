@@ -23,7 +23,6 @@
 #include "StockItem.h"
 #include "LinkedList.h"
 #include "Date.h"
-#
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,7 +31,6 @@ extern "C" {
     
     typedef struct _Inventory{
         List* inventory_items;
-        
     }Inventory;
     
     Inventory* inventory_new();
@@ -47,13 +45,10 @@ extern "C" {
     StockItem* get_item_by_product_code(Inventory* inventory, char* code);
     
     //helps determine total stock level of NPN transistors
-    int count_type_matching_description(char* type, char* description);
+    int count_type_matching_description(Inventory* inventory, char* type, char* description);
     
     //sort by price ascending
-    void inventory_sort_by_price_asc(Inventory* inventory);
-    
-    //helps when determining highest sales volume
-    int inventory_sales_volume_for_date(Inventory* inventory, Date* date);
+    void inventory_sort_by_price(Inventory* inventory, int ascending_flag);
     
     int inventory_count(Inventory* inventory);
     
