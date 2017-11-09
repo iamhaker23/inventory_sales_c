@@ -15,6 +15,7 @@
 #define SALES_H
 
 #include "StockItem.h"
+#include "Inventory.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -44,21 +45,14 @@ extern "C" {
 
     int datecmp(Date* a, Date* b);
     
+    //load from file
+    void load_sales_ledger(FILE* fd, Sales* list, Inventory* inventory);
+    
     Sales* sales_ledger_new();
-
-    //void sales_ledger_fprint(Sales* list, FILE* fd);
-
-    //void sales_ledger_as_string(Sales* list, char *tmp, int tmp_length);
 
     int sales_ledger_length(Sales* list);
 
-    void sales_ledger_tail_insert(Sales* list, StockItem* item, Date* date, int* quantity);
-
-    //void sales_ledger_head_insert(Sales* list, union data_type value);
-
-    //union data_type sales_ledger_pop_head(Sales* list);
-
-    //union data_type sales_ledger_pop_tail(Sales* list);
+    void sales_ledger_add(Sales* list, StockItem* item, Date* date, int* quantity);
 
     void sales_ledger_empty(Sales* list);
 
@@ -66,10 +60,7 @@ extern "C" {
 
     void sales_ledger_gc(Sales* list);
 
-    //int sales_ledger_memory_size(Sales* list);
-
-    //int sales_ledger_estimate_required_buffer(Sales* list);
-
+    Date sales_ledger_highest_volume_day(Sales* list);
 
 #ifdef __cplusplus
 }

@@ -79,6 +79,11 @@ StockItem* item_new(char* line){
                 }
                 
             }
+        }else{
+            if (index == 1){
+                //The line starts \r\n or \r or \n (e.g. empty line)
+                return NULL;
+            }
         }
     }
     
@@ -91,46 +96,46 @@ StockItem* item_new(char* line){
             item = (StockItem*)malloc(sizeof(StockItem));
             item->price_per_unit = int_malloc(price);
             item->quantity = int_malloc(quantity);
-            item->product_code = str_malloc(code, 0);
-            item->description.resistance.original = str_malloc(desc, 0);
+            item->product_code = str_malloc(code);
+            item->description.resistance.original = str_malloc(desc);
             normalise_resistance(item);
-            item->type = str_malloc(type, 0);
+            item->type = str_malloc(type);
             break;
         case(1):
             item = (StockItem*)malloc(sizeof(StockItem));
             item->price_per_unit = int_malloc(price);
             item->quantity = int_malloc(quantity);
-            item->product_code = str_malloc(code, 0);
-            item->description.capacitance.original = str_malloc(desc, 0);
+            item->product_code = str_malloc(code);
+            item->description.capacitance.original = str_malloc(desc);
             normalise_capacitance(item);
-            item->type = str_malloc(type, 0);
+            item->type = str_malloc(type);
             break;
         case(2):
             item = (StockItem*)malloc(sizeof(StockItem));
             item->price_per_unit = int_malloc(price);
             item->quantity = int_malloc(quantity);
-            item->product_code = str_malloc(code, 0);
+            item->product_code = str_malloc(code);
             
             //One NULL to rule them all, one NULL to find them, One NULL to bring them all and in the darkness bind them.
             item->description.transistor_config = NULL;
             
-            item->type = str_malloc(type, 0);
+            item->type = str_malloc(type);
             break;
         case(3):
             item = (StockItem*)malloc(sizeof(StockItem));
             item->price_per_unit = int_malloc(price);
             item->quantity = int_malloc(quantity);
-            item->product_code = str_malloc(code, 0);
-            item->description.transistor_config = str_malloc(desc, 0);
-            item->type = str_malloc(type, 0);
+            item->product_code = str_malloc(code);
+            item->description.transistor_config = str_malloc(desc);
+            item->type = str_malloc(type);
             break;
         case(4):
             item = (StockItem*)malloc(sizeof(StockItem));
             item->price_per_unit = int_malloc(price);
             item->quantity = int_malloc(quantity);
-            item->product_code = str_malloc(code, 0);
-            item->description.ic_desc = str_malloc(desc, 0);
-            item->type = str_malloc(type, 0);
+            item->product_code = str_malloc(code);
+            item->description.ic_desc = str_malloc(desc);
+            item->type = str_malloc(type);
             break;
         default:
             printf("Unknown type: %s\n", type);
@@ -139,25 +144,36 @@ StockItem* item_new(char* line){
     }
     
     if (item != NULL){
-        item->original_line_def = str_malloc(line, -1);
+        //Assuming valid line can only terminate \r\n (as in given inventory.txt line endings).
+        //remove the trailing \r\n and ensure string is null terminated.
+        
+        int LINE_ENDING_CHAR_COUNT = 1;
+        
+        int line_size = strlen(line);
+        char* trim_newline = (char*)malloc(line_size); 
+        
+        strncpy(trim_newline, line, strlen(line)-LINE_ENDING_CHAR_COUNT);
+        snprintf(trim_newline, line_size, "%s%c", trim_newline, '\0');
+        
+        item->original_line_def = str_malloc(trim_newline);
     }
     
     
     return item;
 }
 
-char* str_malloc(char* value, int length_modifier){
+char* str_malloc(char* value){
     
     char* new_ptr = (char*)malloc(strlen(value));
-    strncpy(new_ptr, value, strlen(value)+length_modifier);
+    strncpy(new_ptr, value, strlen(value));
     return new_ptr;
 }
 
-int* int_malloc(char* value){
-    int converted = atoi(value);
-    int* new_ptr = (int*)malloc(sizeof(converted));
-    new_ptr = (int*)converted;
-    return new_ptr;
+int int_malloc(char* value){
+    //int* new_ptr = (int*)malloc(sizeof(int));
+    //*new_ptr = atoi(value);
+    //return new_ptr;
+    return atoi(value);
 }
 
 int get_switch(char* type){

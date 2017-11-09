@@ -37,7 +37,9 @@
 
             while((read = (getline(&line_ptr, &line_buff_size, fd))) && read!=-1 ){
                 StockItem* item = item_new(line);
-                inventory_add(inventory, item);
+                if (item != NULL){
+                    inventory_add(inventory, item);
+                }
             }
 
         }else{
@@ -54,6 +56,11 @@
         if (tmp == NULL){
             fprintf(stderr, "Error: Unable to allocate memory in list_tail_insert()\n");
             exit(EXIT_FAILURE);
+        }
+        
+        if (get_item_by_product_code(inventory, item->product_code) != NULL){
+            printf("Error: product already exists with code: %s.\n", item->product_code);
+            return -1;
         }
 
         tmp->item = item;
@@ -73,18 +80,17 @@
 
     //helps when modifying stock levels per sale
     StockItem* get_item_by_product_code(Inventory* inventory, char* code){
-        StockItem* item = NULL;
 
         INode* current = inventory->first;
         while(current!=NULL){
             StockItem* tmp = current->item;
             if (strcmp(tmp->product_code, code)==0){
-                item = tmp;
+                return tmp;
             }
             current = current->next;
         }
 
-        return item;
+        return (StockItem*)NULL;
     }
 
     //helps determine total stock level of NPN transistors
@@ -130,9 +136,12 @@
             INode* current = inventory->first;
             while(current != NULL){
                 StockItem* item = current->item;
+                
+                //load item_as_string with char sequence representing item
                 int buffer_length = stockitem_estimate_required_buffer(item);
-                char item_as_string[buffer_length];
-                stockitem_as_string(item, item_as_string, buffer_length);
+                char item_as_string[buffer_length+1];
+                stockitem_as_string(item, item_as_string, buffer_length+1);
+                
                 snprintf(tmp + strlen(tmp), tmp_length, (current->next==NULL) ?"[%s]" : "[%s], ", item_as_string);
                 current = current->next;
             }

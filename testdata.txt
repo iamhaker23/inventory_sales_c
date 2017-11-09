@@ -1,0 +1,17 @@
+resistor, RES_1R0, 41, 1, 1R0
+resistor, RES_10R, 467, 1, 10R
+capacitor, CAP_30uF, 2, 73, 30uF
+capacitor, CAP_300uF, 585, 85, 300uF
+diode, 1N4004,  194, 6
+diode, 1N4148,  201, 5
+transistor, OC44,     57, 50, PNP
+transistor, 2N2369A,  37, 18, NPN
+IC, NE555,  8, 17,  "Timer"
+IC, LF356,  1, 45,  "JFET op-amp"
+
+
+
+
+
+
+

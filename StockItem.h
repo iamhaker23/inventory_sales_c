@@ -52,8 +52,8 @@ extern "C" {
     void normalise_resistance(StockItem* item);
     int get_switch(char* type);
     int stockitem_estimate_required_buffer(StockItem* item);
-    char* str_malloc(char* value, int len);
-    int* int_malloc(char* value);
+    char* str_malloc(char* value);
+    int int_malloc(char* value);
     
 #ifdef __cplusplus
 }

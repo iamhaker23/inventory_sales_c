@@ -5,6 +5,7 @@
  */
 
 #include "Sales.h"
+#include "Inventory.h"
 
     Sales* sales_ledger_new(){
         Sales* new_list = (Sales*)malloc(sizeof(Sales));
@@ -26,7 +27,7 @@
         return list->length;
     }
 
-    void sales_ledger_tail_insert(Sales* list, StockItem* item, Date* date, int* quantity){
+    void sales_ledger_add(Sales* list, StockItem* item, Date* date, int* quantity){
             SNode* tmp = (SNode*)malloc(sizeof(SNode));
     
             if (tmp == NULL){
@@ -135,4 +136,93 @@
         
         return output;
         
+    }
+    
+    Date sales_ledger_highest_volume_day(Sales* list){
+        Date output;// = NULL;
+        
+        //Latch highest volume day
+        
+        return output;
+    }
+    
+    //load from file
+    void load_sales_ledger(FILE* fd, Sales* list, Inventory* inventory){
+        if (fd != NULL){
+            size_t line_buff_size = 100;
+            size_t read = 0;
+            char line[line_buff_size];
+            char* line_ptr = line;
+
+            while((read = (getline(&line_ptr, &line_buff_size, fd))) && read!=-1 ){
+                
+                if (line[0] == '\n' || line[0] == '\r'){
+                    continue;
+                }
+                
+                char quantity[20] = "\0";
+                char date[20] = "\0";
+                char code[20] = "\0";
+                
+                int index = 0;
+                const int NUM_FIELDS = 3;
+                const int MAX_FIELD_LENGTH = 20;
+
+                for (int i = 1; i <= NUM_FIELDS; i++){
+                    char tmp = line[index++];
+                    if (tmp != '\n' && tmp != '\r'){
+                        while (tmp != ',' && tmp != '\n' && tmp != '\r'){
+                            //omit space, tab and quotes
+                            if (tmp != ' ' && tmp != '\t' && tmp != '"'){
+                                switch(i){
+                                   case(1):
+                                       snprintf(date, MAX_FIELD_LENGTH, "%s%c", date, tmp);
+                                       tmp = line[index++];
+                                       if (tmp == ',' || tmp == '\n' || tmp == '\r'){
+                                            snprintf(date, MAX_FIELD_LENGTH, "%s%c", date, '\0');
+                                       }
+                                       break;
+                                   case(2):
+                                       snprintf(code, MAX_FIELD_LENGTH, "%s%c", code, tmp);
+                                       tmp = line[index++];
+                                       if (tmp == ',' || tmp == '\n' || tmp == '\r'){
+                                            snprintf(code, MAX_FIELD_LENGTH, "%s%c", code, '\0');
+                                       }
+                                       break;
+                                   case(3):
+                                       snprintf(quantity, MAX_FIELD_LENGTH, "%s%c", quantity, tmp);
+                                       tmp = line[index++];
+                                       if (tmp == ',' || tmp == '\n' || tmp == '\r'){
+                                            snprintf(quantity, MAX_FIELD_LENGTH, "%s%c", quantity, '\0');
+                                       }
+                                       break;
+                                   default:
+                                       tmp = line[index++];
+                                       break;
+                                }
+                            }else{
+                                tmp = line[index++];
+                            }
+
+                        }
+                    }else{
+                        if (index == 1){
+                            //The line starts \r\n or \r or \n (e.g. empty line)
+                        }
+                    }
+                }
+                
+                printf("%s, %s, %s\n\n", date, code, quantity);
+                StockItem* item = get_item_by_product_code(inventory, code);
+                if (item != NULL){
+                    //sales_ledger_add(list, item, date, quantity);
+                    
+                    //TODO: add to ledger
+                }
+            }
+
+        }else{
+            printf("Error: NULL file provided.");
+            exit(EXIT_FAILURE);
+        }
     }
