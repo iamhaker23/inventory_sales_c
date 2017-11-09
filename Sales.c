@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+#include <stdint.h>
+
 #include "Sales.h"
 #include "Inventory.h"
 
@@ -299,6 +301,56 @@
         
     }
     
-    void applySalesToInventory(Sales* sales, Inventory* inventory){
+    Sales_Volume* apply_sales_to_inventory(Sales* sales, Inventory* inventory){
         
+        //optimisation decision - less processing/data overhead required to determine highest sales volume of all successful transactions and return in apply_sales_to_inventory().
+        Date* highest_volume_date;
+        int highest_volume = INT32_MIN;
+        int highest_volume_spend;
+        
+        Date* current_volume_date;
+        int current_volume;
+        int current_volume_spend;
+        
+        SNode* current = sales->first;
+        while(current!=NULL){
+            
+            int new_quantity = current->item->quantity - current->quantity;
+            
+            if (new_quantity < 0){
+                fprintf(stderr, "Can't process transaction %0.2d/%0.2d/%0.4d, %s, %d.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity);
+            }else{
+                
+                //transaction was successful, so apply as such
+                if (datecmp(current_volume_date, &current->date) != 0){
+                    //different date, starting a new count
+                    if (current_volume > highest_volume){
+                        highest_volume = current_volume;
+                        highest_volume_date = current_volume_date;
+                        highest_volume_spend = current_volume_spend;
+                    }
+                    current_volume_date = &current->date;
+                    current_volume = current->quantity;
+                    current_volume_spend = current->quantity * current->item->price_per_unit;
+                }else{
+                    //same date, increment
+                    current_volume = current_volume + current->quantity;
+                    current_volume_spend = current_volume_spend +(current->quantity * current->item->price_per_unit);
+                }
+                
+                current->item->quantity = new_quantity;
+            }
+            
+            current = current->next;
+        }
+        Sales_Volume* performance_record = sales_volume_new();
+        performance_record->date = *highest_volume_date;
+        performance_record->volume = highest_volume;
+        performance_record->pence_spent = highest_volume_spend;
+        return performance_record;
+    }
+    
+    Sales_Volume* sales_volume_new(){
+        Sales_Volume* sales_volume = (Sales_Volume*)malloc(sizeof(Sales_Volume));
+        return sales_volume;
     }

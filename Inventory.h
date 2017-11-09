@@ -44,7 +44,7 @@ extern "C" {
     StockItem* get_item_by_product_code(Inventory* inventory, char* code);
     
     //helps determine total stock level of NPN transistors
-    int count_type_matching_description(Inventory* inventory, char* type, char* description);
+    int count_type_matching_description_in_stock(Inventory* inventory, char* type, char* description);
 
     Inventory* inventory_new();
 

@@ -216,8 +216,35 @@ void stockitem_as_string(StockItem* item, char* buffer, int buffer_length){
     if (buffer_length < est ){
         printf("Error: stockitem_as_string() attempted to load %d chars into %d long buffer.\n", est, buffer_length);
     }
-    //strncpy(buffer, item->original_line_def, buffer_length);
-    snprintf(buffer, buffer_length, item->original_line_def);
+    
+    //"resistor" 0
+    //"capacitor" 1
+    //"diode" 2
+    //"transistor" 3
+    //"IC" 4
+    
+    int type_switch = get_switch(item->type);
+    switch(type_switch){
+        case(0):
+            snprintf(buffer, buffer_length, "%s, %s, %d, %d, %s", item->type, item->product_code, item->quantity, item->price_per_unit, item->description.resistance.original);
+            break;
+        case(1):
+            snprintf(buffer, buffer_length, "%s, %s, %d, %d, %s", item->type, item->product_code, item->quantity, item->price_per_unit, item->description.capacitance.original);
+            break;
+        case(2):
+            snprintf(buffer, buffer_length, "%s, %s, %d, %d", item->type, item->product_code, item->quantity, item->price_per_unit );
+            break;
+        case(3):
+            snprintf(buffer, buffer_length, "%s, %s, %d, %d, %s", item->type, item->product_code, item->quantity, item->price_per_unit, item->description.transistor_config);
+            break;
+        case(4):
+            snprintf(buffer, buffer_length, "%s, %s, %d, %d, %s", item->type, item->product_code, item->quantity, item->price_per_unit, item->description.ic_desc);
+            break;
+        default:
+            fprintf(stderr, "Cannot print unknown type %s.\n", item->type);
+            exit(EXIT_FAILURE);
+            break;
+    }
 }
 
 void normalise_capacitance(StockItem* item){

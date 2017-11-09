@@ -29,6 +29,12 @@ extern "C" {
         int year;
     }Date;
     
+    typedef struct _Sales_Volume{
+        Date date;
+        int volume;
+        int pence_spent;
+    }Sales_Volume;
+    
     typedef struct _SNode{
         StockItem* item;
         Date date;
@@ -70,7 +76,9 @@ extern "C" {
     
     void sales_ledger_as_string(Sales* sales, char* sales_string, int estimated_length);
 
-    void applySalesToInventory(Sales* sales, Inventory* inventory);
+    Sales_Volume* apply_sales_to_inventory(Sales* sales, Inventory* inventory);
+
+    Sales_Volume* sales_volume_new();
     
 #ifdef __cplusplus
 }

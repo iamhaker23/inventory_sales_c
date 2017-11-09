@@ -94,7 +94,7 @@
     }
 
     //helps determine total stock level of NPN transistors
-    int count_type_matching_description(Inventory* inventory, char* type, char* description){
+    int count_type_matching_description_in_stock(Inventory* inventory, char* type, char* description){
         int output = 0;
 
         INode* current = inventory->first;

@@ -104,13 +104,70 @@ void testCanLoadInventory(char* testname) {
         printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected length 1, got %d\n", testname, inventory_length(inventory)); 
     }
     
-    char* expected_string = "( [resistor, RES_1R0, 41, 1, 1R0], [resistor, RES_10R, 467, 1, 10R], [capacitor, CAP_30uF, 2, 73, 30uF], [capacitor, CAP_300uF, 585, 85, 300uF], [capacitor, CAP_150pF, 585, 85, 300uF], [diode, 1N4004,  194, 6], [diode, 1N4148,  201, 5], [transistor, OC44,     57, 50, PNP], [transistor, 2N2369A,  37, 18, NPN], [IC, LF356,  1, 45,  \"JFET op-amp\"] )";
+    char* expected_string = "( [resistor, RES_1R0, 41, 1, 1R0], [resistor, RES_10R, 467, 1, 10R], [capacitor, CAP_30uF, 2, 73, 30uF], [capacitor, CAP_300uF, 585, 85, 300uF], [capacitor, CAP_150pF, 585, 85, 300uF], [diode, 1N4004, 194, 6], [diode, 1N4148, 201, 5], [transistor, OC44, 57, 50, PNP], [transistor, 2N2369A, 37, 18, NPN], [IC, LF356, 1, 45, JFETop-amp] )";
     int estimated_length = inventory_estimate_required_buffer(inventory);
     char* inventory_string = (char*)malloc(estimated_length);
     inventory_as_string(inventory, inventory_string, estimated_length);
     if (strncmp(expected_string, inventory_string, strlen(expected_string))) { 
         printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected \n%s \ngot \n%s\n", testname, expected_string, inventory_string); 
     }
+    
+}
+
+void testCanSortInventory(char* testname) {
+    printf("\n****************\n%s\n****************\n", testname);
+
+    Inventory* inventory = inventory_new();
+    
+    int expected_length = 0;
+    if (inventory_length(inventory) != expected_length) {
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected length 0, got %d\n", testname, inventory_length(inventory)); 
+    }
+    
+    FILE* fd = fopen("testdata.txt", "r");
+    load_inventory(fd, inventory);
+    fclose(fd);
+    
+    expected_length = 10;
+    if (inventory_length(inventory) != expected_length) { 
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected length 1, got %d\n", testname, inventory_length(inventory)); 
+    }
+    
+    char* expected_string = "( [resistor, RES_1R0, 41, 1, 1R0], [resistor, RES_10R, 467, 1, 10R], [capacitor, CAP_30uF, 2, 73, 30uF], [capacitor, CAP_300uF, 585, 85, 300uF], [capacitor, CAP_150pF, 585, 85, 300uF], [diode, 1N4004, 194, 6], [diode, 1N4148, 201, 5], [transistor, OC44, 57, 50, PNP], [transistor, 2N2369A, 37, 18, NPN], [IC, LF356, 1, 45, JFETop-amp] )";
+    int estimated_length = inventory_estimate_required_buffer(inventory);
+    char* inventory_string = (char*)malloc(estimated_length);
+    inventory_as_string(inventory, inventory_string, estimated_length);
+    if (strncmp(expected_string, inventory_string, strlen(expected_string))) { 
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected \n%s \ngot \n%s\n", testname, expected_string, inventory_string); 
+    }
+    printf("Presort:%s.\n", inventory_string);
+    inventory_sort(inventory, 1);
+    
+    expected_string = "( [resistor, RES_1R0, 41, 1, 1R0], [resistor, RES_10R, 467, 1, 10R], [diode, 1N4148, 201, 5], [diode, 1N4004, 194, 6], [transistor, 2N2369A, 37, 18, NPN], [IC, LF356, 1, 45, JFETop-amp], [transistor, OC44, 57, 50, PNP], [capacitor, CAP_30uF, 2, 73, 30uF], [capacitor, CAP_300uF, 585, 85, 300uF], [capacitor, CAP_150pF, 585, 85, 300uF] )";
+    estimated_length = inventory_estimate_required_buffer(inventory);
+    inventory_string = (char*)malloc(estimated_length);
+    inventory_as_string(inventory, inventory_string, estimated_length);
+    if (strncmp(expected_string, inventory_string, strlen(expected_string))) { 
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected \n%s \ngot \n%s\n", testname, expected_string, inventory_string); 
+    }
+    printf("Postsort:%s.\n", inventory_string);
+}
+
+void testCanCountStockOfTypeMatchingDescription(char* testname){
+    
+    //usage e.g. 
+    //count the stock of "transistor" matching description "transistor_config=NPN"
+    
+    printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Not implemented.\n", testname); 
+    
+}
+
+void testCanTotalResistanceOfStock(char* testname){
+    
+    //usage e.g.
+    //count the total resistance of all resistors in stock.
+    
+    printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Not implemented.\n", testname); 
     
 }
 
@@ -176,7 +233,59 @@ int main(int argc, char** argv) {
     
     //End test***************************************************************************************************
     
+    //Start test***************************************************************************************************
     
+    //INIT CLOCK, RUN TEST AND CALCULATE DURATION
+    start = clock();
+    testname = "testCanSortInventory";
+    printf("%%TEST_STARTED%% %s (InventorySimpleTest)\n", testname);
+    testCanSortInventory(testname);
+    end = clock();
+    duration = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("%%TEST_FINISHED%% time=%f %s (InventorySimpleTest) \n", duration, testname);
+    
+    
+    //ADD TO TOTAL DURATION OF TEST SUITE
+    total_duration = total_duration + duration;
+    
+    //End test***************************************************************************************************
+    
+    
+    //Start test***************************************************************************************************
+    
+    //INIT CLOCK, RUN TEST AND CALCULATE DURATION
+    start = clock();
+    testname = "testCanCountStockOfTypeMatchingDescription";
+    printf("%%TEST_STARTED%% %s (InventorySimpleTest)\n", testname);
+    testCanCountStockOfTypeMatchingDescription(testname);
+    end = clock();
+    duration = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("%%TEST_FINISHED%% time=%f %s (InventorySimpleTest) \n", duration, testname);
+    
+    
+    //ADD TO TOTAL DURATION OF TEST SUITE
+    total_duration = total_duration + duration;
+    
+    //End test***************************************************************************************************
+    
+    //Start test***************************************************************************************************
+    
+    //INIT CLOCK, RUN TEST AND CALCULATE DURATION
+    start = clock();
+    testname = "testCanTotalResistanceOfStock";
+    printf("%%TEST_STARTED%% %s (InventorySimpleTest)\n", testname);
+    testCanTotalResistanceOfStock(testname);
+    end = clock();
+    duration = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("%%TEST_FINISHED%% time=%f %s (InventorySimpleTest) \n", duration, testname);
+    
+    
+    //ADD TO TOTAL DURATION OF TEST SUITE
+    total_duration = total_duration + duration;
+    
+    //End test***************************************************************************************************
+
+
     //SUITE FINISH**********************************************************
 
     printf("%%SUITE_FINISHED%% time=%f\n", total_duration);
