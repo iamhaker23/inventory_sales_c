@@ -31,8 +31,8 @@ extern "C" {
     
     typedef struct _SNode{
         StockItem* item;
-        Date* date;
-        int* quantity;
+        Date date;
+        int quantity;
         struct _SNode* next;
         struct _SNode* previous;
     } SNode;
@@ -52,7 +52,7 @@ extern "C" {
 
     int sales_ledger_length(Sales* list);
 
-    void sales_ledger_add(Sales* list, StockItem* item, Date* date, int* quantity);
+    void sales_ledger_add(Sales* list, StockItem* item, Date date, int quantity);
 
     void sales_ledger_empty(Sales* list);
 
@@ -61,7 +61,17 @@ extern "C" {
     void sales_ledger_gc(Sales* list);
 
     Date sales_ledger_highest_volume_day(Sales* list);
+    
+    Date date_malloc(char* date);
+    
+    void date_as_string(Date date, char* date_str, int buff_size);
+    
+    int sales_ledger_estimate_required_buffer(Sales* sales);
+    
+    void sales_ledger_as_string(Sales* sales, char* sales_string, int estimated_length);
 
+    void applySalesToInventory(Sales* sales, Inventory* inventory);
+    
 #ifdef __cplusplus
 }
 #endif

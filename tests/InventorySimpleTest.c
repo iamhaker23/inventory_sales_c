@@ -79,7 +79,7 @@ void testCanPrintInventory(char* testname) {
     int estimated_length = inventory_estimate_required_buffer(inventory);
     char* inventory_string = (char*)malloc(estimated_length);
     inventory_as_string(inventory, inventory_string, estimated_length);
-    if (strncmp(expected_string, inventory_string, strlen(expected_string))) { 
+    if (strncmp(expected_string, inventory_string, strlen(expected_string)) != 0) { 
         printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected \n%s \ngot \n%s\n", testname, expected_string, inventory_string); 
     }
     
@@ -104,7 +104,7 @@ void testCanLoadInventory(char* testname) {
         printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected length 1, got %d\n", testname, inventory_length(inventory)); 
     }
     
-    char* expected_string = "( [resistor, RES_1R0, 41, 1, 1R0], [resistor, RES_10R, 467, 1, 10R], [capacitor, CAP_30uF, 2, 73, 30uF], [capacitor, CAP_300uF, 585, 85, 300uF], [diode, 1N4004,  194, 6], [diode, 1N4148,  201, 5], [transistor, OC44,     57, 50, PNP], [transistor, 2N2369A,  37, 18, NPN], [IC, NE555,  8, 17,  \"Timer\"], [IC, LF356,  1, 45,  \"JFET op-amp\"] )";
+    char* expected_string = "( [resistor, RES_1R0, 41, 1, 1R0], [resistor, RES_10R, 467, 1, 10R], [capacitor, CAP_30uF, 2, 73, 30uF], [capacitor, CAP_300uF, 585, 85, 300uF], [capacitor, CAP_150pF, 585, 85, 300uF], [diode, 1N4004,  194, 6], [diode, 1N4148,  201, 5], [transistor, OC44,     57, 50, PNP], [transistor, 2N2369A,  37, 18, NPN], [IC, LF356,  1, 45,  \"JFET op-amp\"] )";
     int estimated_length = inventory_estimate_required_buffer(inventory);
     char* inventory_string = (char*)malloc(estimated_length);
     inventory_as_string(inventory, inventory_string, estimated_length);

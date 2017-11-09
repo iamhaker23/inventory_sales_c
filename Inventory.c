@@ -90,7 +90,7 @@
             current = current->next;
         }
 
-        return (StockItem*)NULL;
+        return NULL;
     }
 
     //helps determine total stock level of NPN transistors

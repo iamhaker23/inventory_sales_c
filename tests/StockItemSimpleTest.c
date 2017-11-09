@@ -27,8 +27,8 @@
  * 
  */
 
-void testCanCreateFromLine() {
-    printf("StockItemSimpleTest testCanCreateFromLine\n");
+void testCanCreateFromLine(char* testname) {
+    printf("\n****************\n%s\n****************\n", testname);
     
     StockItem* test = item_new("resistor, code, 10, 99, 10R1\n");
     
@@ -203,8 +203,8 @@ void testCanCreateFromLine() {
     }
 }
 
-void testCanNormaliseResistances(){
-    printf("StockItemSimpleTest testCanNormaliseResistances\n");
+void testCanNormaliseResistances(char* testname) {
+    printf("\n****************\n%s\n****************\n", testname);
     
     StockItem* test = item_new("resistor, code, 10, 99, 10R1\n");
     
@@ -245,8 +245,8 @@ void testCanNormaliseResistances(){
     
 }
 
-void testCanNormaliseCapacitance(){
-    printf("StockItemSimpleTest testCanNormaliseCapacitance\n");
+void testCanNormaliseCapacitance(char* testname) {
+    printf("\n****************\n%s\n****************\n", testname);
     
     StockItem* test = item_new("capacitor, CAP_1500nF, 796, 68, 1500nF\n");
     char* expected = "1500nF";
@@ -287,8 +287,8 @@ void testCanNormaliseCapacitance(){
     
 }
 
-void testCanStringifyStockItem(){
-    printf("StockItemSimpleTest testCanStringifyStockItem\n");
+void testCanStringifyStockItem(char* testname) {
+    printf("\n****************\n%s\n****************\n", testname);
     
     StockItem* test = item_new("capacitor, CAP_1500nF, 796, 68, 1500nF\n");
     char* expected = "capacitor, CAP_1500nF, 796, 68, 1500nF";
@@ -312,8 +312,8 @@ void testCanStringifyStockItem(){
     
 }
     
-void testCanDetermineCheaperStockItem(){
-    printf("StockItemSimpleTest testCanDetermineCheaperStockItem\n");
+void testCanDetermineCheaperStockItem(char* testname) {
+    printf("\n****************\n%s\n****************\n", testname);
     
     StockItem* test = item_new("capacitor, CAP_1500nF, 796, 68, 1500nF\n");
     StockItem* test2 = item_new("capacitor, CAP_1500nF, 796, 100, 1500nF\n");
@@ -347,14 +347,16 @@ int main(int argc, char** argv) {
     clock_t start, end;
     double duration;
     double total_duration = 0.0f;
+    char* testname;
     
     //INIT CLOCK, RUN TEST AND CALCULATE DURATION
     start = clock();
-    printf("%%TEST_STARTED%% testCanCreateFromLine (StockItemSimpleTest)\n");
-    testCanCreateFromLine();
+    testname = "testCanCreateFromLine";
+    printf("%%TEST_STARTED%% %s (StockItemSimpleTest)\n", testname);
+    testCanCreateFromLine(testname);
     end = clock();
     duration = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("%%TEST_FINISHED%% time=%f testCanCreateFromLine (StockItemSimpleTest) \n", duration);
+    printf("%%TEST_FINISHED%% time=%f %s (StockItemSimpleTest) \n", duration, testname);
     
     
     //ADD TO TOTAL DURATION OF TEST SUITE
@@ -362,33 +364,36 @@ int main(int argc, char** argv) {
     
     //INIT CLOCK, RUN TEST AND CALCULATE DURATION
     start = clock();
-    printf("%%TEST_STARTED%% testCanCreateFromLine (StockItemSimpleTest)\n");
-    testCanNormaliseResistances();
+    testname = "testCanNormaliseResistances";
+    printf("%%TEST_STARTED%% %s (StockItemSimpleTest)\n", testname);
+    testCanNormaliseResistances(testname);
     end = clock();
     duration = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("%%TEST_FINISHED%% time=%f testCanCreateFromLine (StockItemSimpleTest) \n", duration);
+    printf("%%TEST_FINISHED%% time=%f %s (StockItemSimpleTest) \n", duration, testname);
     
     //ADD TO TOTAL DURATION OF TEST SUITE
     total_duration = total_duration + duration;
     
     //INIT CLOCK, RUN TEST AND CALCULATE DURATION
     start = clock();
-    printf("%%TEST_STARTED%% testCanNormaliseCapacitance (StockItemSimpleTest)\n");
-    testCanNormaliseCapacitance();
+    testname = "testCanNormaliseCapacitance";
+    printf("%%TEST_STARTED%% %s (StockItemSimpleTest)\n", testname);
+    testCanNormaliseCapacitance(testname);
     end = clock();
     duration = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("%%TEST_FINISHED%% time=%f testCanNormaliseCapacitance (StockItemSimpleTest) \n", duration);
+    printf("%%TEST_FINISHED%% time=%f %s (StockItemSimpleTest) \n", duration, testname);
     
     //ADD TO TOTAL DURATION OF TEST SUITE
     total_duration = total_duration + duration;
     
     //INIT CLOCK, RUN TEST AND CALCULATE DURATION
     start = clock();
-    printf("%%TEST_STARTED%% testCanStringifyStockItem (StockItemSimpleTest)\n");
-    testCanStringifyStockItem();
+    testname = "testCanStringifyStockItem";
+    printf("%%TEST_STARTED%% %s (StockItemSimpleTest)\n", testname);
+    testCanStringifyStockItem(testname);
     end = clock();
     duration = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("%%TEST_FINISHED%% time=%f testCanStringifyStockItem (StockItemSimpleTest) \n", duration);
+    printf("%%TEST_FINISHED%% time=%f %s (StockItemSimpleTest) \n", duration, testname);
     
     
     //ADD TO TOTAL DURATION OF TEST SUITE
@@ -396,11 +401,12 @@ int main(int argc, char** argv) {
     
     //INIT CLOCK, RUN TEST AND CALCULATE DURATION
     start = clock();
-    printf("%%TEST_STARTED%% testCanDetermineCheaperStockItem (StockItemSimpleTest)\n");
-    testCanDetermineCheaperStockItem();
+    testname = "testCanDetermineCheaperStockItem";
+    printf("%%TEST_STARTED%% %s (StockItemSimpleTest)\n", testname);
+    testCanDetermineCheaperStockItem(testname);
     end = clock();
     duration = (double)(end - start) / CLOCKS_PER_SEC;
-    printf("%%TEST_FINISHED%% time=%f testCanDetermineCheaperStockItem (StockItemSimpleTest) \n", duration);
+    printf("%%TEST_FINISHED%% time=%f %s (StockItemSimpleTest) \n", duration, testname);
     
     
     //ADD TO TOTAL DURATION OF TEST SUITE

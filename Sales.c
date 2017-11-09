@@ -27,7 +27,7 @@
         return list->length;
     }
 
-    void sales_ledger_add(Sales* list, StockItem* item, Date* date, int* quantity){
+    void sales_ledger_add(Sales* list, StockItem* item, Date date, int quantity){
             SNode* tmp = (SNode*)malloc(sizeof(SNode));
     
             if (tmp == NULL){
@@ -72,12 +72,12 @@
                 do{
                     sorted = 1;
                     for(SNode* node = list->first; node->next != NULL; node=node->next){
-                        if (datecmp(node->date, node->next->date) > 0 ){
+                        if (datecmp(&(node->date), &(node->next->date)) > 0 ){
                            //swap
 
                            StockItem* tmp_item = node->item ;
-                           int* tmp_quantity = node->quantity;
-                           Date* tmp_date = node->date;
+                           int tmp_quantity = node->quantity;
+                           Date tmp_date = node->date;
 
                            node->item = node->next->item ;
                            node->date = node->next->date ;
@@ -95,12 +95,12 @@
                 do{
                     sorted = 1;
                     for(SNode* node = list->first; node->next != NULL; node=node->next){
-                        if (datecmp(node->date, node->next->date) < 0 ){
+                        if (datecmp(&(node->date), &(node->next->date)) < 0 ){
                            //swap
 
                            StockItem* tmp_item = node->item ;
-                           int* tmp_quantity = node->quantity;
-                           Date* tmp_date = node->date;
+                           int tmp_quantity = node->quantity;
+                           Date tmp_date = node->date;
 
                            node->item = node->next->item ;
                            node->date = node->next->date ;
@@ -212,12 +212,15 @@
                     }
                 }
                 
-                printf("%s, %s, %s\n\n", date, code, quantity);
+                
                 StockItem* item = get_item_by_product_code(inventory, code);
                 if (item != NULL){
-                    //sales_ledger_add(list, item, date, quantity);
                     
-                    //TODO: add to ledger
+                    Date date_obj = date_malloc(date);
+                    int quantity_obj = int_malloc(quantity);
+                    sales_ledger_add(list, item, date_obj, quantity_obj);
+                }else{
+                    fprintf(stderr, "Could not process sale of %s: Item doesn't exist.\n", code);
                 }
             }
 
@@ -225,4 +228,77 @@
             printf("Error: NULL file provided.");
             exit(EXIT_FAILURE);
         }
+    }
+    
+    Date date_malloc(char* date){
+        //strictly converts a 10 character DD/MM/YYYY string
+        const char delimiter = '/';
+        
+        if (strlen(date) != 10 || date[2] != '/' || date[5] != '/'){
+            fprintf(stderr, "Could not convert date: %s.\n", date);
+            exit(EXIT_FAILURE);
+        }
+        
+        Date* output = (Date*)malloc(sizeof(Date));
+       
+        char part[4] ="0000";
+        snprintf(part, 5, "00%c%c", date[0], date[1]);
+        int dayOfMonth = atoi(part);
+        
+        snprintf(part, 5, "00%c%c", date[3], date[4]);
+        int month = atoi(part);
+        
+        snprintf(part, 5, "%c%c%c%c", date[6], date[7], date[8], date[9]);
+        int year = atoi(part);
+        
+        output->dayOfMonth = dayOfMonth;
+        output->month = month;
+        output->year = year;
+        
+        return *output;
+    }
+    
+    void date_as_string(Date date, char* date_str, int buff_size){
+        if (buff_size < 10){
+            fprintf(stderr, "Could not load datestring into %d buffer.\n", buff_size);
+            exit(EXIT_FAILURE);
+        }
+        snprintf(date_str, 11, "%0.2d/%0.2d/%0.4d", date.dayOfMonth, date.month, date.year);
+    }
+    
+    int sales_ledger_estimate_required_buffer(Sales* sales){
+        return sales->length*50;
+    }
+    
+    void sales_ledger_as_string(Sales* sales, char* sales_string, int estimated_length){
+        
+        //undefined behaviuour if sales_string is not empty.
+
+        //stop if the buffer is not large enough
+        int est = sales_ledger_estimate_required_buffer(sales);
+        if (estimated_length < est ){
+            printf("Error: inventory_as_string() attempted to load %d bytes into %d buffer.\n", est, estimated_length);
+            exit(EXIT_FAILURE);
+        }
+
+        if (sales_ledger_length(sales) == 0){
+            snprintf(sales_string, estimated_length, "List is empty.");
+        }else{
+            snprintf(sales_string, estimated_length, "( ");
+            SNode* current = sales->first;
+            while(current != NULL){
+                char date_str[10] = "\0";
+                date_as_string(current->date, date_str,  10);
+                
+                snprintf(sales_string + strlen(sales_string), estimated_length, (current->next==NULL) ?"[%s, %s, %d]" : "[%s, %s, %d], ", date_str, current->item->product_code, current->quantity);
+                current = current->next;
+            }
+            snprintf(sales_string + strlen(sales_string),estimated_length, " )");
+            printf("%s\n", sales_string);
+        }
+        
+    }
+    
+    void applySalesToInventory(Sales* sales, Inventory* inventory){
+        
     }
