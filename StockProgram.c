@@ -86,11 +86,12 @@ int main(int argc, char** argv) {
     fflush(log);
     
     printf("Inventory (price ascending):\r\n\r\n%s\r\n\r\n", inventory_str);
+    free(inventory_str);
     
     Sales_Volume* highest_volume = apply_sales_to_inventory(sales_ledger, inventory, log);
     
-    printf("Highest Sales Volume:\r\nDate:%0.2d/%0.2d/%0.4d\r\nSales:%d\r\nProfit:£%.2f\r\n\r\n", highest_volume->date.dayOfMonth, highest_volume->date.month, highest_volume->date.year, highest_volume->volume, ((float)highest_volume->pence_spent/100.0f));
-    fprintf(log, "Highest Sales Volume:\r\nDate:%0.2d/%0.2d/%0.4d\r\nSales:%d\r\nProfit:£%.2f\r\n\r\n", highest_volume->date.dayOfMonth, highest_volume->date.month, highest_volume->date.year, highest_volume->volume, ((float)highest_volume->pence_spent/100.0f));
+    printf("Highest Sales Volume:\r\nDate:%0.2d/%0.2d/%0.4d\r\nSales:%d\r\nProfit:£%.2f\r\n\r\n", highest_volume->date->dayOfMonth, highest_volume->date->month, highest_volume->date->year, highest_volume->volume, ((float)(highest_volume->pence_spent)/100.0f));
+    fprintf(log, "Highest Sales Volume:\r\nDate:%0.2d/%0.2d/%0.4d\r\nSales:%d\r\nProfit:£%.2f\r\n\r\n", highest_volume->date->dayOfMonth, highest_volume->date->month, highest_volume->date->year, highest_volume->volume, ((float)(highest_volume->pence_spent)/100.0f));
     fflush(log);
     
     printf("METRICS AFTER SALES***************\r\n\r\n");
@@ -103,9 +104,21 @@ int main(int argc, char** argv) {
     fflush(log);
     
     total_resistance = total_resistance_of_in_stock_resistors(inventory);
-    printf("Total resistance of all resistors (in stock): %.2f\r\n", total_resistance);
-    fprintf(log, "Total resistance of all resistors (in stock): %.2f\r\n", total_resistance);
+    printf("Total resistance of all resistors (in stock): %.2f Ohms\r\n", total_resistance);
+    fprintf(log, "Total resistance of all resistors (in stock): %.2f Ohms\r\n", total_resistance);
     fflush(log);
+    
+    int sizeOfInventory = (sizeof(inventory)) + (inventory_length(inventory)*sizeof(INode));
+    printf("Garbage collect inventory list, freeing %d bytes.\r\n", sizeOfInventory);
+    fprintf(log, "Garbage collect inventory list, freeing %d bytes.\r\n", sizeOfInventory);
+    fflush(log);
+    inventory_gc(inventory);
+    
+    int sizeOfSalesLedger = (sizeof(sales_ledger)) + (sales_ledger_length(sales_ledger)*sizeof(SNode));
+    printf("Garbage collect sales list, freeing %d bytes.\r\n", sizeOfSalesLedger);
+    fprintf(log, "Garbage collect sales list, freeing %d bytes.\r\n", sizeOfSalesLedger);
+    fflush(log);
+    sales_ledger_gc(sales_ledger);
     
     fclose(log);
     return (EXIT_SUCCESS);

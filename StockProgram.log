@@ -8561,4 +8561,6 @@ Profit:£2.68
 METRICS AFTER SALES***************
 
 Total NPN transistors (in stock): 0
-Total resistance of all resistors (in stock): 690746816.00
+Total resistance of all resistors (in stock): 690746816.00Ohms
+Garbage collect inventory list, freeing 7304 bytes.
+Garbage collect sales list, freeing 1310728 bytes.

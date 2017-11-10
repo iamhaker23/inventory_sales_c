@@ -229,8 +229,8 @@ void testCanApplySalesAndDetermineHighestVolumeDate(char* testname){
         printf("%%TEST_FAILED%% time=0 testname=%s (SalesSimpleTest) message=%d is not 19.\n", testname, highest_volume->volume);
     }
     
-    if(highest_volume->date.dayOfMonth != 24 || highest_volume->date.month != 2 || highest_volume->date.year != 1980 ){
-        printf("%%TEST_FAILED%% time=0 testname=%s (SalesSimpleTest) message=%0.2d/%0.2d/%0.4d is not 24/02/1980.\n", testname, highest_volume->date.dayOfMonth, highest_volume->date.month, highest_volume->date.year);
+    if(highest_volume->date->dayOfMonth != 24 || highest_volume->date->month != 2 || highest_volume->date->year != 1980 ){
+        printf("%%TEST_FAILED%% time=0 testname=%s (SalesSimpleTest) message=%0.2d/%0.2d/%0.4d is not 24/02/1980.\n", testname, highest_volume->date->dayOfMonth, highest_volume->date->month, highest_volume->date->year);
     }
     
 }

@@ -305,13 +305,14 @@
     Sales_Volume* apply_sales_to_inventory(Sales* sales, Inventory* inventory, FILE* log){
         
         //optimisation decision - less processing/data overhead required to determine highest sales volume of all successful transactions and return in apply_sales_to_inventory().
+        //Bugfix - initialised integers to avoid undefined behaviour
         Date* highest_volume_date;
         int highest_volume = INT32_MIN;
-        int highest_volume_spend;
+        int highest_volume_spend = 0;
         
         Date* current_volume_date;
-        int current_volume;
-        int current_volume_spend;
+        int current_volume = 0;
+        int current_volume_spend = 0;
         
         SNode* current = sales->first;
         while(current!=NULL){
@@ -349,7 +350,7 @@
             current = current->next;
         }
         Sales_Volume* performance_record = sales_volume_new();
-        performance_record->date = *highest_volume_date;
+        performance_record->date = highest_volume_date;
         performance_record->volume = highest_volume;
         performance_record->pence_spent = highest_volume_spend;
         return performance_record;
