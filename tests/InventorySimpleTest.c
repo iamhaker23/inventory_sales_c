@@ -85,6 +85,38 @@ void testCanPrintInventory(char* testname) {
     
 }
 
+void testCanPrintCSVInventory(char* testname) {
+    printf("\n****************\n%s\n****************\n", testname);
+
+    Inventory* inventory = inventory_new();
+    
+    int expected_length = 0;
+    if (inventory_length(inventory) != expected_length) {
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected length 0, got %d\n", testname, inventory_length(inventory)); 
+    }
+    
+    StockItem* item = item_new("resistor, code1, 10, 99, 10R1\n");
+    inventory_add(inventory, item);
+    item = item_new("resistor, code2, 10, 99, 10R1\n");
+    inventory_add(inventory, item);
+    item = item_new("resistor, code3, 10, 99, 10R1\n");
+    inventory_add(inventory, item);
+    
+    expected_length = 3;
+    if (inventory_length(inventory) != expected_length) { 
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected length 1, got %d\n", testname, inventory_length(inventory)); 
+    }
+    
+    char* expected_string = "\r\nresistor, code1, 10, 99, 10R1\r\nresistor, code2, 10, 99, 10R1\r\nresistor, code3, 10, 99, 10R1\r\n";
+    int estimated_length = inventory_estimate_required_buffer(inventory);
+    char* inventory_string = (char*)malloc(estimated_length);
+    inventory_as_csv(inventory, inventory_string, estimated_length);
+    if (strncmp(expected_string, inventory_string, strlen(expected_string)) != 0) { 
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected \n%s \ngot \n%s\n", testname, expected_string, inventory_string); 
+    }
+    
+}
+
 void testCanLoadInventory(char* testname) {
     printf("\n****************\n%s\n****************\n", testname);
 
@@ -153,21 +185,96 @@ void testCanSortInventory(char* testname) {
     printf("Postsort:%s.\n", inventory_string);
 }
 
-void testCanCountStockOfTypeMatchingDescription(char* testname){
-    
+void testCanCountStockOfTypeMatchingDescription(char* testname) {
+    printf("\n****************\n%s\n****************\n", testname);
     //usage e.g. 
     //count the stock of "transistor" matching description "transistor_config=NPN"
     
-    printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Not implemented.\n", testname); 
+    Inventory* inventory = inventory_new();
+    
+    StockItem* item = item_new("transistor, code1, 10, 97, NPN\n");
+    inventory_add(inventory, item);
+    item = item_new("transistor, code2, 10, 99, NPN\n");
+    inventory_add(inventory, item);
+    item = item_new("transistor, code3, 10, 98, NPN\n");
+    inventory_add(inventory, item);
+    item = item_new("transistor, code4, 10, 99, PNP\n");
+    inventory_add(inventory, item);
+    item = item_new("transistor, code5, 10, 100, PNP\n");
+    inventory_add(inventory, item);
+    
+    int expected_length = 5;
+    if (inventory_length(inventory) != expected_length) {
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected length 5, got %d\n", testname, inventory_length(inventory)); 
+    }
+    
+    int actual_count = count_type_matching_description_in_stock(inventory, "transistor", "NPN");
+    
+    int expected_NPN_count = 3;
+    if (actual_count != expected_NPN_count) {
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected 3, got %d\n", testname, actual_count); 
+    }
+    
+    actual_count = count_type_matching_description_in_stock(inventory, "transistor", "PNP");
+    
+    int expected_PNP_count = 2;
+    if (actual_count != expected_PNP_count) {
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected 2, got %d\n", testname, actual_count); 
+    } 
     
 }
 
-void testCanTotalResistanceOfStock(char* testname){
-    
+void testCanTotalResistanceOfStock(char* testname) {
+    printf("\n****************\n%s\n****************\n", testname);
     //usage e.g.
     //count the total resistance of all resistors in stock.
     
-    printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Not implemented.\n", testname); 
+    Inventory* inventory = inventory_new();
+    
+    StockItem* item = item_new("resistor, code1, 10, 97, 10K\n");
+    inventory_add(inventory, item);
+    item = item_new("resistor, code2, 10, 99, 20K\n");
+    inventory_add(inventory, item);
+    item = item_new("resistor, code3, 10, 98, 22K\n");
+    inventory_add(inventory, item);
+    item = item_new("resistor, code4, 10, 99, 100M2\n");
+    inventory_add(inventory, item);
+    item = item_new("resistor, code5, 10, 100, 1R1\n");
+    inventory_add(inventory, item);
+    item = item_new("resistor, code6, 0, 105, 100R1\n");
+    inventory_add(inventory, item);
+    
+    //10000 + 20000 + 22000 + 100200000 + 1.1 = 100252001.1
+    
+    int expected_length = 6;
+    if (inventory_length(inventory) != expected_length) {
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected length 6, got %d\n", testname, inventory_length(inventory)); 
+    }
+    
+    float actual_total_resistance = total_resistance_of_in_stock_resistors(inventory);
+    
+    float expected_total_resistance = 100252001.1f;
+    if (expected_total_resistance != actual_total_resistance) {
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected 100252001.1, got %f\n", testname, actual_total_resistance); 
+    }
+    
+    item = item_new("resistor, code7, 1, 105, 100R1\n");
+    inventory_add(inventory, item);
+    
+    //10000 + 20000 + 22000 + 100200000 + 1.1 = 100252001.1
+    
+    expected_length = 7;
+    if (inventory_length(inventory) != expected_length) {
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected length 7, got %d\n", testname, inventory_length(inventory)); 
+    }
+    
+    actual_total_resistance = total_resistance_of_in_stock_resistors(inventory);
+    
+    expected_total_resistance = 100252101.2f;
+    if (expected_total_resistance != actual_total_resistance) {
+        printf("%%TEST_FAILED%% time=0 testname=%s (InventorySimpleTest) message=Expected 100252001.1, got %f\n", testname, actual_total_resistance); 
+    }
+    
     
 }
 
@@ -216,6 +323,22 @@ int main(int argc, char** argv) {
     
     //End test***************************************************************************************************
     
+    //Start test***************************************************************************************************
+    
+    //INIT CLOCK, RUN TEST AND CALCULATE DURATION
+    start = clock();
+    testname = "testCanPrintCSVInventory";
+    printf("%%TEST_STARTED%% %s (InventorySimpleTest)\n", testname);
+    testCanPrintCSVInventory(testname);
+    end = clock();
+    duration = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("%%TEST_FINISHED%% time=%f %s (InventorySimpleTest) \n", duration, testname);
+    
+    
+    //ADD TO TOTAL DURATION OF TEST SUITE
+    total_duration = total_duration + duration;
+    
+    //End test***************************************************************************************************
     //Start test***************************************************************************************************
     
     //INIT CLOCK, RUN TEST AND CALCULATE DURATION

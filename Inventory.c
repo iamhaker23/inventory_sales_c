@@ -60,7 +60,7 @@
         
         if (get_item_by_product_code(inventory, item->product_code) != NULL){
             printf("Error: product already exists with code: %s.\n", item->product_code);
-            return -1;
+            return;
         }
 
         tmp->item = item;
@@ -95,29 +95,66 @@
 
     //helps determine total stock level of NPN transistors
     int count_type_matching_description_in_stock(Inventory* inventory, char* type, char* description){
-        int output = 0;
-
+        int output = get_subset_of_in_stock(inventory, type, description)->length;
+        return output;
+    }
+    
+    float total_resistance_of_in_stock_resistors(Inventory* inventory){
+        float total_resistance = 0.0f;
+        
+        Inventory* subset = get_subset_of_in_stock(inventory, "resistor", NULL);
+        
+        INode* current = subset->first;
+        while(current != NULL){
+            
+            total_resistance = total_resistance + current->item->description.resistance.normalised_resistance;
+            
+            current = current->next;
+        }
+        
+        return total_resistance;
+        
+    }
+    
+    Inventory* get_subset_of_in_stock(Inventory* inventory, char* type, char* description){
+        Inventory* subset = inventory_new();
+        
         INode* current = inventory->first;
         while(current != NULL){
             int type_switch = get_switch(type);
             switch(type_switch){
-                //only implemented for transistors
+                //only implemented for resistors(0) and transistors(3)
+                case(0):
+                    if (current->item->quantity > 0){
+                        if(strncmp(current->item->type, type, strlen(type)) == 0){  
+                            if (description != NULL){
+                                if(strncmp(current->item->description.resistance.original, description, strlen(description)) == 0){
+                                   inventory_add(subset, current->item);
+                                }   
+                            }else{
+                                inventory_add(subset, current->item);
+                            }
+                        }
+                    }
+                    break;
                 case(3):
-                    if(strncmp(current->item->type, type, strlen(type)) == 0){
-                        if(strncmp(current->item->description.transistor_config, description, strlen(description)) == 0){
-                            output++;
+                    if (current->item->quantity > 0){
+                        if(strncmp(current->item->type, type, strlen(type)) == 0){
+                            if(strncmp(current->item->description.transistor_config, description, strlen(description)) == 0){
+                                inventory_add(subset, current->item);
+                            }
                         }
                     }
                     break;
                 default:
                     printf("Error: count type matching description is not implemented for %s (type_switch:%d).\n", type, type_switch);
-                    return -1;
+                    exit(EXIT_FAILURE);
                     break;
             }
             current = current->next;
         }
-
-        return output;
+        
+        return subset;
     }
 
     void inventory_as_string(Inventory* inventory, char* tmp, int tmp_length){
@@ -145,7 +182,35 @@
                 snprintf(tmp + strlen(tmp), tmp_length, (current->next==NULL) ?"[%s]" : "[%s], ", item_as_string);
                 current = current->next;
             }
-            snprintf(tmp + strlen(tmp),tmp_length, " )", inventory);
+            snprintf(tmp + strlen(tmp),tmp_length, " )");
+        }
+    }
+    
+    void inventory_as_csv(Inventory* inventory, char* tmp, int tmp_length){
+        //stop if the buffer is not large enough
+        int est = inventory_estimate_required_buffer(inventory);
+        if (tmp_length < est ){
+            printf("Error: inventory_as_string() attempted to load %d bytes into %d buffer.\n", est, tmp_length);
+            exit(EXIT_FAILURE);
+        }
+
+        if (inventory_length(inventory) == 0){
+            snprintf(tmp, tmp_length, "List is empty.");
+
+        }else{
+            snprintf(tmp, tmp_length, "\r\n");
+            INode* current = inventory->first;
+            while(current != NULL){
+                StockItem* item = current->item;
+                
+                //load item_as_string with char sequence representing item
+                int buffer_length = stockitem_estimate_required_buffer(item);
+                char item_as_string[buffer_length+1];
+                stockitem_as_string(item, item_as_string, buffer_length+1);
+                
+                snprintf(tmp + strlen(tmp), tmp_length, "%s\r\n", item_as_string);
+                current = current->next;
+            }
         }
     }
 

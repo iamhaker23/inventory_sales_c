@@ -65,8 +65,6 @@ extern "C" {
     void sales_ledger_sort(Sales* list, int ascending_flag);
 
     void sales_ledger_gc(Sales* list);
-
-    Date sales_ledger_highest_volume_day(Sales* list);
     
     Date date_malloc(char* date);
     
@@ -76,7 +74,7 @@ extern "C" {
     
     void sales_ledger_as_string(Sales* sales, char* sales_string, int estimated_length);
 
-    Sales_Volume* apply_sales_to_inventory(Sales* sales, Inventory* inventory);
+    Sales_Volume* apply_sales_to_inventory(Sales* sales, Inventory* inventory, FILE* log);
 
     Sales_Volume* sales_volume_new();
     

@@ -158,14 +158,16 @@ StockItem* item_new(char* line){
         item->original_line_def = str_malloc(trim_newline);
     }
     
-    
     return item;
 }
 
 char* str_malloc(char* value){
-    
     char* new_ptr = (char*)malloc(strlen(value));
-    strncpy(new_ptr, value, strlen(value));
+    
+    //bugfix -> strlen(value)+1 otherwise chops off string terminator "\0"
+    //which results in segfault when dereferencing
+    strncpy(new_ptr, value, strlen(value)+1);
+    
     return new_ptr;
 }
 
@@ -215,6 +217,7 @@ void stockitem_as_string(StockItem* item, char* buffer, int buffer_length){
     int est = stockitem_estimate_required_buffer(item);
     if (buffer_length < est ){
         printf("Error: stockitem_as_string() attempted to load %d chars into %d long buffer.\n", est, buffer_length);
+        exit(EXIT_FAILURE);
     }
     
     //"resistor" 0
@@ -249,7 +252,7 @@ void stockitem_as_string(StockItem* item, char* buffer, int buffer_length){
 
 void normalise_capacitance(StockItem* item){
     int tmp_size = strlen(item->description.capacitance.original);
-    char tmp[tmp_size];
+    char* tmp = (char*)malloc(tmp_size);
     strncpy(tmp, item->description.capacitance.original, tmp_size);
     
     int isAfterRadix = 0;
@@ -297,12 +300,14 @@ void normalise_capacitance(StockItem* item){
         }
     }
     item->description.capacitance.normalised_capacitance = value/divisor;
+    free(tmp);
 }
 
 void normalise_resistance(StockItem* item){
     int tmp_size = strlen(item->description.resistance.original);
-    char tmp[tmp_size];
+    char* tmp = (char*)malloc(tmp_size);
     strncpy(tmp, item->description.resistance.original, tmp_size);
+    
     
     int isAfterRadix = 0;
     double multiplier = 1.0f;
@@ -350,4 +355,5 @@ void normalise_resistance(StockItem* item){
         }
     }
     item->description.resistance.normalised_resistance = value*multiplier;
+    free(tmp);
 }

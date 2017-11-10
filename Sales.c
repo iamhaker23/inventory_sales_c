@@ -129,23 +129,24 @@
     int datecmp(Date* a, Date* b){
         int output = 0;
         
+        //bias NULL to represent "earliest possible date"
+        if (a == NULL){
+            return -1;
+        }
+        if (b == NULL){
+            return 1;
+        }
+        
         if ((a->year > b->year) || (a->year == b->year && a->month > b-> month) || (a->year == b->year && a->month == b->month && a->dayOfMonth > b->dayOfMonth)){
             //a is later
             output = 1;
         }else if ((a->year < b->year) || (a->year == b->year && a->month < b-> month) || (a->year == b->year && a->month == b->month && a->dayOfMonth < b->dayOfMonth)){
+            //a is earlier
             output = -1;
         }
         
         return output;
         
-    }
-    
-    Date sales_ledger_highest_volume_day(Sales* list){
-        Date output;// = NULL;
-        
-        //Latch highest volume day
-        
-        return output;
     }
     
     //load from file
@@ -222,7 +223,7 @@
                     int quantity_obj = int_malloc(quantity);
                     sales_ledger_add(list, item, date_obj, quantity_obj);
                 }else{
-                    fprintf(stderr, "Could not process sale of %s: Item doesn't exist.\n", code);
+                    fprintf(stderr, "Could not process transaction for %s: Item doesn't exist.\n", code);
                 }
             }
 
@@ -301,7 +302,7 @@
         
     }
     
-    Sales_Volume* apply_sales_to_inventory(Sales* sales, Inventory* inventory){
+    Sales_Volume* apply_sales_to_inventory(Sales* sales, Inventory* inventory, FILE* log){
         
         //optimisation decision - less processing/data overhead required to determine highest sales volume of all successful transactions and return in apply_sales_to_inventory().
         Date* highest_volume_date;
@@ -318,18 +319,22 @@
             int new_quantity = current->item->quantity - current->quantity;
             
             if (new_quantity < 0){
-                fprintf(stderr, "Can't process transaction %0.2d/%0.2d/%0.4d, %s, %d.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity);
+                fprintf(stderr, "Can't process transaction %0.2d/%0.2d/%0.4d, %s, %d: ONLY %d REMAINING.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity, current->item->quantity);
+                if (log != NULL){
+                    fprintf(log, "Can't process transaction %0.2d/%0.2d/%0.4d, %s, %d: ONLY %d REMAINING.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity, current->item->quantity);
+                }
             }else{
                 
                 //transaction was successful, so apply as such
-                if (datecmp(current_volume_date, &current->date) != 0){
+                
+                if (datecmp(current_volume_date, &(current->date)) != 0){
                     //different date, starting a new count
                     if (current_volume > highest_volume){
                         highest_volume = current_volume;
                         highest_volume_date = current_volume_date;
                         highest_volume_spend = current_volume_spend;
                     }
-                    current_volume_date = &current->date;
+                    current_volume_date = &(current->date);
                     current_volume = current->quantity;
                     current_volume_spend = current->quantity * current->item->price_per_unit;
                 }else{

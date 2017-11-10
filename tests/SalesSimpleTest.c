@@ -134,7 +134,7 @@ void testCanApplySalesAndReportFailures(char* testname) {
         printf("%%TEST_FAILED%% time=0 testname=%s (SalesSimpleTest) message=Expected \n%s \ngot \n%s\n", testname, expected_string, sales_string); 
     }
     
-    apply_sales_to_inventory(sales, inventory);
+    apply_sales_to_inventory(sales, inventory, NULL);
     
     char* exp_code;
     int exp_quantity;
@@ -199,7 +199,7 @@ void testCanApplySalesAndDetermineHighestVolumeDate(char* testname){
         printf("%%TEST_FAILED%% time=0 testname=%s (SalesSimpleTest) message=Expected \n%s \ngot \n%s\n", testname, expected_string, sales_string); 
     }
     
-    Sales_Volume* highest_volume = apply_sales_to_inventory(sales, inventory);
+    Sales_Volume* highest_volume = apply_sales_to_inventory(sales, inventory, NULL);
     
     char* exp_code;
     int exp_quantity;

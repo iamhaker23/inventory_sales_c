@@ -45,11 +45,17 @@ extern "C" {
     
     //helps determine total stock level of NPN transistors
     int count_type_matching_description_in_stock(Inventory* inventory, char* type, char* description);
+    
+    float total_resistance_of_in_stock_resistors(Inventory* inventory);
+    
+    Inventory* get_subset_of_in_stock(Inventory* inventory, char* type, char* description);
 
     Inventory* inventory_new();
 
     void inventory_as_string(Inventory* list, char *tmp, int tmp_length);
-
+    
+    void inventory_as_csv(Inventory* inventory, char* tmp, int tmp_length);
+    
     int inventory_length(Inventory* list);
 
     void inventory_empty(Inventory* list);
