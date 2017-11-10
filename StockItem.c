@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Implementation code of StockItem.h
  */
 
 #include <stdlib.h>
@@ -12,76 +10,103 @@
 #include "StockItem.h"
 
 StockItem* item_new(char* line){
-    const int MAX_FIELD_LENGTH = 20;
     
-    //ONE MUST INITIALISE THE CHARACTER ARRAY BUFFERS OR THEY WILL REFERENCE ARBITRARY MEMORY!
+    //Note: must match size of fields
+    const int MAX_FIELD_LENGTH = 20;
+    //Note: MUST INITIALISE THE CHARACTER ARRAY BUFFERS OR THEY WILL INITIALLY REFERENCE ARBITRARY MEMORY!
     char type[20] = "\0";
     char code[20] = "\0";
     char quantity[20] = "\0";
     char price[20] = "\0";
     char desc[20] = "\0";
-    //sscanf(line, "%c,\t%c,\t%c,\t%c,\t%c\n", type, code, quantity, price, desc);
     
     
-    //useless --- reads memory not the string object... gibberish output :'(
     int index = 0;
     const int NUM_FIELDS = 5;
     
+    //For each field, collect characters until delimiter is reached, then move to next field
     for (int i = 1; i <= NUM_FIELDS; i++){
+        //Get current character and post-increment counter
         char tmp = line[index++];
+        
+        //Only continue if character is not a new line
+        //Note: see matching else branch
         if (tmp != '\n' && tmp != '\r'){
+            
+            //Collect characters while the current character is not a field delimiter
             while (tmp != ',' && tmp != '\n' && tmp != '\r'){
                 
-                //omit space, tab and quotes
+                //omit space, tab and quotes by skipping
+                //See matching else branch
                 if (tmp != ' ' && tmp != '\t' && tmp != '"'){
+                    
+                    //Switch parsing based on which field we are iterating over
                     switch(i){
                        case(1):
+                           //Append character to field
                            snprintf(type, MAX_FIELD_LENGTH, "%s%c", type, tmp);
+                           //Peek ahead
                            tmp = line[index++];
+                           //Append line terminator if next character is a delimiter
                            if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                 snprintf(type, MAX_FIELD_LENGTH, "%s%c", type, '\0');
                            }
                            break;
                        case(2):
+                           //Append character to field
                            snprintf(code, MAX_FIELD_LENGTH, "%s%c", code, tmp);
+                           //Peek ahead
                            tmp = line[index++];
+                           //Append line terminator if next character is a delimiter
                            if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                 snprintf(code, MAX_FIELD_LENGTH, "%s%c", code, '\0');
                            }
                            break;
                        case(3):
+                           //Append character to field
                            snprintf(quantity, MAX_FIELD_LENGTH, "%s%c", quantity, tmp);
+                           //Peek ahead
                            tmp = line[index++];
+                           //Append line terminator if next character is a delimiter
                            if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                 snprintf(quantity, MAX_FIELD_LENGTH, "%s%c", quantity, '\0');
                            }
                            break;
                        case(4):
+                           //Append character to field
                            snprintf(price, MAX_FIELD_LENGTH, "%s%c", price, tmp);
+                           //Peek ahead
                            tmp = line[index++];
+                           //Append line terminator if next character is a delimiter
                            if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                 snprintf(price, MAX_FIELD_LENGTH, "%s%c", price, '\0');
                            }
                            break;
                        case(5):
+                           //Append character to field
                            snprintf(desc, MAX_FIELD_LENGTH, "%s%c", desc, tmp);
+                           //Peek ahead
                            tmp = line[index++];
+                           //Append line terminator if next character is a delimiter
                            if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                 snprintf(desc, MAX_FIELD_LENGTH, "%s%c", desc, '\0');
                            }
                            break;
                        default:
+                           //field counter incorrectly initialised, just skip character
+                           fprintf(stderr, "NUM_FIELDS incorrectly assigned: item_new()\n");
                            tmp = line[index++];
                            break;
                     }
                 }else{
+                    //Skip character
                     tmp = line[index++];
                 }
                 
             }
         }else{
             if (index == 1){
-                //The line starts \r\n or \r or \n (e.g. empty line)
+                //The line starts \r\n or \r or \n (i.e. empty line)
                 return NULL;
             }
         }
@@ -91,6 +116,8 @@ StockItem* item_new(char* line){
     
     int type_switch = get_switch(type);
     
+    //Depending on value of type field, switch assigning behaviour
+    //This allows each type to assign the description appropriately
     switch(type_switch){
         case(0):
             item = (StockItem*)malloc(sizeof(StockItem));
@@ -117,6 +144,7 @@ StockItem* item_new(char* line){
             item->product_code = str_malloc(code);
             
             //One NULL to rule them all, one NULL to find them, One NULL to bring them all and in the darkness bind them.
+            //i.e. All union fields value will be NULL by setting any one
             item->description.transistor_config = NULL;
             
             item->type = str_malloc(type);
@@ -138,11 +166,13 @@ StockItem* item_new(char* line){
             item->type = str_malloc(type);
             break;
         default:
+            //Exit immediately as the type is unknown
             printf("Unknown type: %s\n", type);
             exit(EXIT_FAILURE);
             break;
     }
     
+    //If the item is correctly created, store the original line as a record.
     if (item != NULL){
         //Assuming valid line can only terminate \r\n (as in given inventory.txt line endings).
         //remove the trailing \r\n and ensure string is null terminated.
@@ -162,24 +192,24 @@ StockItem* item_new(char* line){
 }
 
 char* str_malloc(char* value){
+    //Allocate new memory that can be referenced outside the scope of the initialising code.
     char* new_ptr = (char*)malloc(strlen(value));
     
     //bugfix -> strlen(value)+1 otherwise chops off string terminator "\0"
-    //which results in segfault when dereferencing
+    //which resulted in overflow when dereferencing
     strncpy(new_ptr, value, strlen(value)+1);
     
     return new_ptr;
 }
 
 int int_malloc(char* value){
-    //int* new_ptr = (int*)malloc(sizeof(int));
-    //*new_ptr = atoi(value);
-    //return new_ptr;
+    //Processing necessary to return the given value as a parsed integer
+    //Which can be stored in StockItem fields
     return atoi(value);
 }
 
 int get_switch(char* type){
-    
+    //Returns a universal flag for the given type, or -1 if type is invalid
     int output = -1;
     
     //Should do this with an array and use index to represent "switch" value
@@ -202,6 +232,8 @@ int stockitem_estimate_required_buffer(StockItem* item){
 }
 
 int stockitem_is_cheaper_than(StockItem* a, StockItem* b){
+    //Determines flag indicating difference b-a
+    
     int return_value = (a->price_per_unit < b->price_per_unit) ? 1 : 0;
     return_value = (a->price_per_unit > b->price_per_unit) ? -1 : return_value;
     return return_value;
@@ -220,14 +252,15 @@ void stockitem_as_string(StockItem* item, char* buffer, int buffer_length){
         exit(EXIT_FAILURE);
     }
     
+    //Switch string building according to type
     //"resistor" 0
     //"capacitor" 1
     //"diode" 2
     //"transistor" 3
     //"IC" 4
-    
     int type_switch = get_switch(item->type);
     switch(type_switch){
+        //Each case builds the appropriate string and appends to the buffer
         case(0):
             snprintf(buffer, buffer_length, "%s, %s, %d, %d, %s", item->type, item->product_code, item->quantity, item->price_per_unit, item->description.resistance.original);
             break;
@@ -251,10 +284,12 @@ void stockitem_as_string(StockItem* item, char* buffer, int buffer_length){
 }
 
 void normalise_capacitance(StockItem* item){
+    //Parse a copy of the original capacitance
     int tmp_size = strlen(item->description.capacitance.original);
     char* tmp = (char*)malloc(tmp_size);
     strncpy(tmp, item->description.capacitance.original, tmp_size);
     
+    //parses each character to determine the value and unit
     int isAfterRadix = 0;
     double divisor = 1.0f;
     double value = 0.0f;
@@ -299,16 +334,21 @@ void normalise_capacitance(StockItem* item){
             }
         }
     }
+    //normalise the value into the base unit (Farads)
     item->description.capacitance.normalised_capacitance = value/divisor;
     free(tmp);
 }
 
 void normalise_resistance(StockItem* item){
+    //Parse resistance value from a copy of the original string resistance
     int tmp_size = strlen(item->description.resistance.original);
     char* tmp = (char*)malloc(tmp_size);
     strncpy(tmp, item->description.resistance.original, tmp_size);
     
-    
+    //parses each character to determine the parts according to BS1852
+    //Major part
+    //Multiplier
+    //Minor part
     int isAfterRadix = 0;
     double multiplier = 1.0f;
     double value = 0.0f;
@@ -354,6 +394,7 @@ void normalise_resistance(StockItem* item){
             }
         }
     }
+    //Normalise the calculated value into the base unit (Ohms)
     item->description.resistance.normalised_resistance = value*multiplier;
     free(tmp);
 }

@@ -23,9 +23,7 @@ extern "C" {
         struct _INode* previous;
     } INode;
 
-    //Inventory list structure
-    //contains pointer to first and last position
-    //stores maintained length counter
+    //defines the pointers and length of an Inventory list (doubly linked list)
     typedef struct _Inventory{
         INode* first;
         int length;
@@ -74,8 +72,6 @@ extern "C" {
 
     //remove inventory list and all elements from memory
     void inventory_gc(Inventory* list);
-
-    
 
 
 #ifdef __cplusplus

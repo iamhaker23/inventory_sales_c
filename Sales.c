@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Implementation code of Sales.h
  */
 
 #include <stdint.h>
@@ -12,9 +10,10 @@
     Sales* sales_ledger_new(){
         Sales* new_list = (Sales*)malloc(sizeof(Sales));
         if (new_list == NULL)
+            
         {
+            //Strategy - exit immediately if memory cannot be allocated
           fprintf(stderr, "Error: Unable to allocate memory in list_new()\n");
-
           exit(EXIT_FAILURE);
         }
 
@@ -26,42 +25,53 @@
     }
 
     int sales_ledger_length(Sales* list){
+        //length is maintained in "add", no need to calculate
         return list->length;
     }
 
     void sales_ledger_add(Sales* list, StockItem* item, Date date, int quantity){
-            SNode* tmp = (SNode*)malloc(sizeof(SNode));
-    
-            if (tmp == NULL){
-                fprintf(stderr, "Error: Unable to allocate memory in list_tail_insert()\n");
-                exit(EXIT_FAILURE);
-            }
+        //Allocate memory for a new SNode
+        SNode* tmp = (SNode*)malloc(sizeof(SNode));
 
-            tmp->item = item;
-            tmp->date = date;
-            tmp->quantity = quantity;
-            tmp->next = NULL;
-            tmp->previous = list->last;
+        if (tmp == NULL){
+            //Strategy - exit immediately if cannot allocate memory.
+            fprintf(stderr, "Error: Unable to allocate memory in list_tail_insert()\n");
+            exit(EXIT_FAILURE);
+        }
 
-            if(list->last == NULL){
-                list->last = list->first = tmp;
-            }else{
-                //The last element of the list is now tmp, and whatever WAS the last element now points to tmp
-                list->last = list->last->next = tmp;
-            }
+        //initialise new SNode with given values
+        tmp->item = item;
+        tmp->date = date;
+        tmp->quantity = quantity;
+        tmp->next = NULL;
+        tmp->previous = list->last;
 
-            list->length=list->length+1;
+        if(list->last == NULL){
+            //if list is empty, this is the first and last element
+            list->last = list->first = tmp;
+        }else{
+            //otherwise, link to list tail
+            //The last element of the list is now tmp, and whatever WAS the last element now points to tmp
+            list->last = list->last->next = tmp;
+        }
+        
+        //maintain length counter
+        list->length=list->length+1;
     }
 
     void sales_ledger_empty(Sales* list){
+        //Traverse sales (forward)
         SNode* node;
     
         while(list->first != NULL){
+            //get current head
             SNode* node = list->first;
+            //unlink current head, point head to next element
             list->first = node->next;
+            //free unlinked head
             free(node);
         }
-
+        //update pointer to indicate empty list
         list->last = NULL;
     }
 
@@ -69,64 +79,48 @@
     void sales_ledger_sort(Sales* list, int ascending_flag){
         if(list->first != list->last){
             //list contains more than one item
-            int sorted;
-            if (ascending_flag == 1){
-                do{
-                    sorted = 1;
-                    for(SNode* node = list->first; node->next != NULL; node=node->next){
-                        if (datecmp(&(node->date), &(node->next->date)) > 0 ){
-                           //swap
+            int swapTakenPlace;
+            //loop until no sorting is required on list
+            do{
+                //initialise sorted flag - "sorting did not take place this iteration"
+                swapTakenPlace = 0;
+                //Traverse list (forward)
+                for(SNode* node = list->first; node->next != NULL; node=node->next){
+                    //if swapping
+                    if (((ascending_flag == 1) && (datecmp(&(node->date), &(node->next->date)) > 0 )) || ((ascending_flag == 0) && (datecmp(&(node->date), &(node->next->date)) < 0 ))){
+                       
+                        //swap
+                       StockItem* tmp_item = node->item ;
+                       int tmp_quantity = node->quantity;
+                       Date tmp_date = node->date;
 
-                           StockItem* tmp_item = node->item ;
-                           int tmp_quantity = node->quantity;
-                           Date tmp_date = node->date;
+                       node->item = node->next->item ;
+                       node->date = node->next->date ;
+                       node->quantity = node->next->quantity ;
 
-                           node->item = node->next->item ;
-                           node->date = node->next->date ;
-                           node->quantity = node->next->quantity ;
-
-                           node->next->item  = tmp_item;
-                           node->next->date  = tmp_date;
-                           node->next->quantity  = tmp_quantity;
-
-                           sorted = 0;
-                        }
+                       node->next->item  = tmp_item;
+                       node->next->date  = tmp_date;
+                       node->next->quantity  = tmp_quantity;
+                       
+                       //flag - "sorting did take place on this iteration"
+                       swapTakenPlace = 1;
+                       
                     }
-                }while(!sorted);
-            }else{
-                do{
-                    sorted = 1;
-                    for(SNode* node = list->first; node->next != NULL; node=node->next){
-                        if (datecmp(&(node->date), &(node->next->date)) < 0 ){
-                           //swap
-
-                           StockItem* tmp_item = node->item ;
-                           int tmp_quantity = node->quantity;
-                           Date tmp_date = node->date;
-
-                           node->item = node->next->item ;
-                           node->date = node->next->date ;
-                           node->quantity = node->next->quantity ;
-
-                           node->next->item  = tmp_item;
-                           node->next->date  = tmp_date;
-                           node->next->quantity  = tmp_quantity;
-
-                           sorted = 0;
-
-                        }
-                    }
-                }while(!sorted);
-            }
+                }
+            }while(swapTakenPlace);
         }
     }
 
+    
     void sales_ledger_gc(Sales* list){
+        //Remove all elements
         sales_ledger_empty(list);
+        //Free pointer to list
         free(list);
     }
     
     int datecmp(Date* a, Date* b){
+        //initialise output for the case "a == b"
         int output = 0;
         
         //bias NULL to represent "earliest possible date"
@@ -137,6 +131,7 @@
             return 1;
         }
         
+        //detect whether a is later or earlier
         if ((a->year > b->year) || (a->year == b->year && a->month > b-> month) || (a->year == b->year && a->month == b->month && a->dayOfMonth > b->dayOfMonth)){
             //a is later
             output = 1;
@@ -152,17 +147,24 @@
     //load from file
     void load_sales_ledger(FILE* fd, Sales* list, Inventory* inventory){
         if (fd != NULL){
+            //File is valid
+            
+            //Initialise line buffer
             size_t line_buff_size = 100;
             size_t read = 0;
             char line[line_buff_size];
             char* line_ptr = line;
 
+            //Loop while we can get a line from the file
             while((read = (getline(&line_ptr, &line_buff_size, fd))) && read!=-1 ){
+                //Note: following parsing code based on StockItem.c implementation
                 
                 if (line[0] == '\n' || line[0] == '\r'){
+                    //nothing to do for an empty line, continue reading rest of file
                     continue;
                 }
                 
+                //initialise fields to be read from line
                 char quantity[20] = "\0";
                 char date[20] = "\0";
                 char code[20] = "\0";
@@ -172,45 +174,62 @@
                 const int MAX_FIELD_LENGTH = 20;
 
                 for (int i = 1; i <= NUM_FIELDS; i++){
+                    //Get the first character of the field
                     char tmp = line[index++];
+                    
+                    //If field begins newline, assume empty field and do not parse
                     if (tmp != '\n' && tmp != '\r'){
+                       
+                        //while end of field is not reached
                         while (tmp != ',' && tmp != '\n' && tmp != '\r'){
+                            
                             //omit space, tab and quotes
+                            //Note: check else branch
                             if (tmp != ' ' && tmp != '\t' && tmp != '"'){
+                                
+                                //switch parsing behaviour according to field
                                 switch(i){
                                    case(1):
+                                       //append character to field value
                                        snprintf(date, MAX_FIELD_LENGTH, "%s%c", date, tmp);
+                                       //peek ahead
                                        tmp = line[index++];
+                                       //if end of field detected, append a string terminator to field '\0'
                                        if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                             snprintf(date, MAX_FIELD_LENGTH, "%s%c", date, '\0');
                                        }
                                        break;
                                    case(2):
+                                       //append character to field value
                                        snprintf(code, MAX_FIELD_LENGTH, "%s%c", code, tmp);
+                                       //peek ahead
                                        tmp = line[index++];
+                                       //if end of field detected, append a string terminator to field '\0'
                                        if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                             snprintf(code, MAX_FIELD_LENGTH, "%s%c", code, '\0');
                                        }
                                        break;
                                    case(3):
+                                       //append character to field value
                                        snprintf(quantity, MAX_FIELD_LENGTH, "%s%c", quantity, tmp);
+                                       //peek ahead
                                        tmp = line[index++];
+                                       //if end of field detected, append a string terminator to field '\0'
                                        if (tmp == ',' || tmp == '\n' || tmp == '\r'){
                                             snprintf(quantity, MAX_FIELD_LENGTH, "%s%c", quantity, '\0');
                                        }
                                        break;
                                    default:
+                                       //field counter incorrectly initialised, just skip character
+                                       fprintf(stderr, "NUM_FIELDS incorrectly assigned: load_sales_ledger()\n");
                                        tmp = line[index++];
                                        break;
                                 }
                             }else{
+                                //Move to next character
                                 tmp = line[index++];
                             }
 
-                        }
-                    }else{
-                        if (index == 1){
-                            //The line starts \r\n or \r or \n (e.g. empty line)
                         }
                     }
                 }
@@ -218,16 +237,18 @@
                 
                 StockItem* item = get_item_by_product_code(inventory, code);
                 if (item != NULL){
-                    
+                    //If item exists, add sale to Sales Ledger list
                     Date date_obj = date_malloc(date);
                     int quantity_obj = int_malloc(quantity);
                     sales_ledger_add(list, item, date_obj, quantity_obj);
                 }else{
-                    fprintf(stderr, "Could not process transaction for %s: Item doesn't exist.\n", code);
+                    //Item is not in inventory, but continue as rest of data may be valid.
+                    fprintf(stderr, "Could not load transaction for %s: Item doesn't exist.\n", code);
                 }
             }
 
         }else{
+            //Stop immediately if the sales file is invalid
             printf("Error: NULL file provided.");
             exit(EXIT_FAILURE);
         }
@@ -237,13 +258,18 @@
         //strictly converts a 10 character DD/MM/YYYY string
         const char delimiter = '/';
         
+        
         if (strlen(date) != 10 || date[2] != '/' || date[5] != '/'){
+            //String is incorrect format
+            //Stop immediately otherwise undefined behaviour would occur
             fprintf(stderr, "Could not convert date: %s.\n", date);
             exit(EXIT_FAILURE);
         }
         
+        //Allocate memory for date (so it can be referenced outside initialising code scope)
         Date* output = (Date*)malloc(sizeof(Date));
        
+        //convert string into integer parts
         char part[4] ="0000";
         snprintf(part, 5, "00%c%c", date[0], date[1]);
         int dayOfMonth = atoi(part);
@@ -254,6 +280,7 @@
         snprintf(part, 5, "%c%c%c%c", date[6], date[7], date[8], date[9]);
         int year = atoi(part);
         
+        //load values into newly created Date
         output->dayOfMonth = dayOfMonth;
         output->month = month;
         output->year = year;
@@ -263,9 +290,11 @@
     
     void date_as_string(Date date, char* date_str, int buff_size){
         if (buff_size < 10){
+            //Exit immediately as buffer cannot contain date string
             fprintf(stderr, "Could not load datestring into %d buffer.\n", buff_size);
             exit(EXIT_FAILURE);
         }
+        //load buffer with date string
         snprintf(date_str, 11, "%0.2d/%0.2d/%0.4d", date.dayOfMonth, date.month, date.year);
     }
     
@@ -275,7 +304,7 @@
     
     void sales_ledger_as_string(Sales* sales, char* sales_string, int estimated_length){
         
-        //undefined behaviuour if sales_string is not empty.
+        //Note: undefined behaviuour if sales_string is not empty.
 
         //stop if the buffer is not large enough
         int est = sales_ledger_estimate_required_buffer(sales);
@@ -319,6 +348,7 @@
             
             int new_quantity = current->item->quantity - current->quantity;
             
+            //Do not process transaction if there is not enough stock
             if (new_quantity < 0){
                 fprintf(stderr, "Can't process transaction %0.2d/%0.2d/%0.4d, %s, %d: ONLY %d REMAINING.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity, current->item->quantity);
                 if (log != NULL){
@@ -326,11 +356,15 @@
                 }
             }else{
                 
-                //transaction was successful, so apply as such
+                //there is enough stock, apply transaction
                 
+                //BUT FIRST - update measure of sales volume and keep record of highest date
                 if (datecmp(current_volume_date, &(current->date)) != 0){
-                    //different date, starting a new count
+                    //sale is for a different date, starting a new running count
+                    
+                    //BUT FIRST - is the current a new record?
                     if (current_volume > highest_volume){
+                        //Found new highest sales volume
                         highest_volume = current_volume;
                         highest_volume_date = current_volume_date;
                         highest_volume_spend = current_volume_spend;
@@ -338,25 +372,31 @@
                     current_volume_date = &(current->date);
                     current_volume = current->quantity;
                     current_volume_spend = current->quantity * current->item->price_per_unit;
+                    
                 }else{
-                    //same date, increment
+                    //sale is for the same date, increment
                     current_volume = current_volume + current->quantity;
                     current_volume_spend = current_volume_spend +(current->quantity * current->item->price_per_unit);
                 }
                 
+                //actually update the stock level
                 current->item->quantity = new_quantity;
             }
             
             current = current->next;
         }
+        
+        //return highest sales volume stats
         Sales_Volume* performance_record = sales_volume_new();
         performance_record->date = highest_volume_date;
         performance_record->volume = highest_volume;
         performance_record->pence_spent = highest_volume_spend;
+        
         return performance_record;
     }
     
     Sales_Volume* sales_volume_new(){
+        //Allocate memory for a new sales volume (so it can be referenced outside the scope of the initialising code)
         Sales_Volume* sales_volume = (Sales_Volume*)malloc(sizeof(Sales_Volume));
         return sales_volume;
     }
