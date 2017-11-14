@@ -312,7 +312,7 @@
         INode* node;
     
         while(inventory->first != NULL){
-            INode* node = inventory->first;
+            node = inventory->first;
             
             //unlink current head (point head at next element)
             inventory->first = node->next;

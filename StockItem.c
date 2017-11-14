@@ -242,7 +242,7 @@ int stockitem_is_cheaper_than(StockItem* a, StockItem* b){
 void stockitem_as_string(StockItem* item, char* buffer, int buffer_length){
     
     if (item == NULL){
-        snprintf(buffer, buffer_length, "NULL\0");
+        snprintf(buffer, buffer_length, "NULL");
         return;
     }
     
@@ -290,14 +290,13 @@ void normalise_capacitance(StockItem* item){
     strncpy(tmp, item->description.capacitance.original, tmp_size);
     
     //parses each character to determine the value and unit
-    int isAfterRadix = 0;
     double divisor = 1.0f;
     double value = 0.0f;
     if (tmp != NULL){
         for (int i = 0; i < tmp_size; i++){
             char current = tmp[i];
             int charCode = (int)current;
-            if (charCode > 47 & charCode < 58){
+            if ((charCode > 47) && (charCode < 58)){
                 //charCode is a digit, add to the next decimal column
                 value = (value*10.0f) + (double)((int)charCode%48);
             }else{
@@ -356,7 +355,7 @@ void normalise_resistance(StockItem* item){
         for (int i = 0; i < tmp_size; i++){
             char current = tmp[i];
             int charCode = (int)current;
-            if (charCode > 47 & charCode < 58){
+            if ((charCode > 47) && (charCode < 58)){
                 //charCode is a digit
                 if(isAfterRadix == 1){
                     //Add the value, accounting for it's placement after the radix

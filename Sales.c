@@ -65,7 +65,7 @@
     
         while(list->first != NULL){
             //get current head
-            SNode* node = list->first;
+            node = list->first;
             //unlink current head, point head to next element
             list->first = node->next;
             //free unlinked head
@@ -256,8 +256,6 @@
     
     Date date_malloc(char* date){
         //strictly converts a 10 character DD/MM/YYYY string
-        const char delimiter = '/';
-        
         
         if (strlen(date) != 10 || date[2] != '/' || date[5] != '/'){
             //String is incorrect format
@@ -295,7 +293,7 @@
             exit(EXIT_FAILURE);
         }
         //load buffer with date string
-        snprintf(date_str, 11, "%0.2d/%0.2d/%0.4d", date.dayOfMonth, date.month, date.year);
+        snprintf(date_str, 11, "%.2d/%.2d/%.4d", date.dayOfMonth, date.month, date.year);
     }
     
     int sales_ledger_estimate_required_buffer(Sales* sales){
@@ -350,9 +348,9 @@
             
             //Do not process transaction if there is not enough stock
             if (new_quantity < 0){
-                fprintf(stderr, "Can't process transaction %0.2d/%0.2d/%0.4d, %s, %d: ONLY %d REMAINING.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity, current->item->quantity);
+                fprintf(stderr, "Can't process transaction %.2d/%.2d/%.4d, %s, %d: ONLY %d REMAINING.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity, current->item->quantity);
                 if (log != NULL){
-                    fprintf(log, "Can't process transaction %0.2d/%0.2d/%0.4d, %s, %d: ONLY %d REMAINING.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity, current->item->quantity);
+                    fprintf(log, "Can't process transaction %.2d/%.2d/%.4d, %s, %d: ONLY %d REMAINING.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity, current->item->quantity);
                 }
             }else{
                 

@@ -39,8 +39,8 @@ int main(int argc, char** argv) {
     FILE* sales_file = fopen("sales.txt", "r");
     
     if (inventory_file == NULL || sales_file == NULL){
-        fprintf(log, "%s%d\r\n", "Inventory file@", (long)inventory_file);
-        fprintf(log, "%s%d\r\n", "Sales file@", (long)sales_file);
+        fprintf(log, "%s%ld\r\n", "Inventory file@", (long)inventory_file);
+        fprintf(log, "%s%ld\r\n", "Sales file@", (long)sales_file);
         fflush(log);
     
         fprintf(stderr, "%s, see StockProgram.log for details.\r\n", "Couldn't find data");
@@ -103,8 +103,8 @@ int main(int argc, char** argv) {
     free(inventory_str);
     
     //After sales output - Q2 (print highest volume stats)
-    printf("Highest Sales Volume:\r\nDate:%0.2d/%0.2d/%0.4d\r\nSales:%d\r\nProfit:£%.2f\r\n\r\n", highest_volume->date->dayOfMonth, highest_volume->date->month, highest_volume->date->year, highest_volume->volume, ((float)(highest_volume->pence_spent)/100.0f));
-    fprintf(log, "Highest Sales Volume:\r\nDate:%0.2d/%0.2d/%0.4d\r\nSales:%d\r\nProfit:£%.2f\r\n\r\n", highest_volume->date->dayOfMonth, highest_volume->date->month, highest_volume->date->year, highest_volume->volume, ((float)(highest_volume->pence_spent)/100.0f));
+    printf("Highest Sales Volume:\r\nDate:%.2d/%.2d/%.4d\r\nSales:%d\r\nProfit:£%.2f\r\n\r\n", highest_volume->date->dayOfMonth, highest_volume->date->month, highest_volume->date->year, highest_volume->volume, ((float)(highest_volume->pence_spent)/100.0f));
+    fprintf(log, "Highest Sales Volume:\r\nDate:%.2d/%.2d/%.4d\r\nSales:%d\r\nProfit:£%.2f\r\n\r\n", highest_volume->date->dayOfMonth, highest_volume->date->month, highest_volume->date->year, highest_volume->volume, ((float)(highest_volume->pence_spent)/100.0f));
     fflush(log);
     
     //After sales output - Q3, Q4 (print NPN transistors in stock, aggregated resistance values")
