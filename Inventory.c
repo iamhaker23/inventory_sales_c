@@ -34,12 +34,11 @@
             
             //Initialise line buffer
             size_t line_buff_size = 100;
-            size_t read = 0;
             char line[line_buff_size];
             char* line_ptr = line;
             
             //load line into line buffer
-            while((read = (getline(&line_ptr, &line_buff_size, fd))) && read!=-1 ){
+            while(fgets(line, line_buff_size, fd)!=NULL ){
                 
                 //each line, get StockItem
                 StockItem* item = item_new(line);

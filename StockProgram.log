@@ -1,10 +1,8 @@
 Starting StockProgram.
 Inventory loaded 304 items.
 Sales Ledger loaded 32768 sales.
-METRICS BEFORE SALES***************
-
-Total NPN transistors (in stock): 3
-Total resistance of all resistors (in stock): 1001110976.00
+Total NPN transistors (in stock, before processing sales): 3
+Total resistance of all resistors (in stock, before processing sales): 1001110976.00
 Can't process transaction 27/01/1980, RES_510R, 8: ONLY 7 REMAINING.
 Can't process transaction 11/02/1980, CAP_27uF, 6: ONLY 3 REMAINING.
 Can't process transaction 24/02/1980, Z80A, 5: ONLY 0 REMAINING.
@@ -8558,9 +8556,7 @@ Date:12/05/1987
 Sales:48
 Profit:£2.68
 
-METRICS AFTER SALES***************
-
-Total NPN transistors (in stock): 0
-Total resistance of all resistors (in stock): 690746816.00 Ohms
+Total NPN transistors (in stock, after processing sales): 0
+Total resistance of all resistors (in stock, after processing sales): 690746816.00 Ohms
 Garbage collect inventory list, freeing 7304 bytes.
 Garbage collect sales list, freeing 1310728 bytes.

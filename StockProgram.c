@@ -65,24 +65,24 @@ int main(int argc, char** argv) {
     fflush(log);
     
     //Debug - show metrics generated before sales
-    printf("METRICS BEFORE SALES***************\r\n\r\n");
-    fprintf(log, "METRICS BEFORE SALES***************\r\n\r\n");
-    fflush(log);
-    
     //count NPN transistors
     int total_npn_resistors = count_type_matching_description_in_stock(inventory, "transistor", "NPN");
-    printf("Total NPN transistors (in stock): %d\r\n", total_npn_resistors);
-    fprintf(log, "Total NPN transistors (in stock): %d\r\n", total_npn_resistors);
+    printf("Total NPN transistors (in stock, before processing sales): %d\r\n", total_npn_resistors);
+    fprintf(log, "Total NPN transistors (in stock, before processing sales): %d\r\n", total_npn_resistors);
     fflush(log);
     
     //aggregate resistance values
     float total_resistance = total_resistance_of_in_stock_resistors(inventory);
-    printf("Total resistance of all resistors (in stock): %.2f\r\n", total_resistance);
-    fprintf(log, "Total resistance of all resistors (in stock): %.2f\r\n", total_resistance);
+    printf("Total resistance of all resistors (in stock, before processing sales): %.2f\r\n", total_resistance);
+    fprintf(log, "Total resistance of all resistors (in stock, before processing sales): %.2f\r\n", total_resistance);
     fflush(log);
     
     //apply sales ledger to inventory, record highest volume stats
     Sales_Volume* highest_volume = apply_sales_to_inventory(sales_ledger, inventory, log);
+    
+    if (highest_volume->failed_transactions != 0){
+        printf("There were %d failed transactions. Check StockProgram.log for details.\n", highest_volume->failed_transactions);
+    }
     
     //After sales output - Q1 (print inventory in price ascending order)
     int estimated_required_length = inventory_estimate_required_buffer(inventory);
@@ -108,20 +108,16 @@ int main(int argc, char** argv) {
     fflush(log);
     
     //After sales output - Q3, Q4 (print NPN transistors in stock, aggregated resistance values")
-    printf("METRICS AFTER SALES***************\r\n\r\n");
-    fprintf(log, "METRICS AFTER SALES***************\r\n\r\n");
-    fflush(log);
-    
     //NPN transistor count
     total_npn_resistors = count_type_matching_description_in_stock(inventory, "transistor", "NPN");
-    printf("Total NPN transistors (in stock): %d\r\n", total_npn_resistors);
-    fprintf(log, "Total NPN transistors (in stock): %d\r\n", total_npn_resistors);
+    printf("Total NPN transistors (in stock, after processing sales): %d\r\n", total_npn_resistors);
+    fprintf(log, "Total NPN transistors (in stock, after processing sales): %d\r\n", total_npn_resistors);
     fflush(log);
     
     //Total resistance
     total_resistance = total_resistance_of_in_stock_resistors(inventory);
-    printf("Total resistance of all resistors (in stock): %.2f Ohms\r\n", total_resistance);
-    fprintf(log, "Total resistance of all resistors (in stock): %.2f Ohms\r\n", total_resistance);
+    printf("Total resistance of all resistors (in stock, after processing sales): %.2f Ohms\r\n", total_resistance);
+    fprintf(log, "Total resistance of all resistors (in stock, after processing sales): %.2f Ohms\r\n", total_resistance);
     fflush(log);
     
     //Debug - garbage collection

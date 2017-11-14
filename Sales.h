@@ -29,6 +29,7 @@ extern "C" {
         Date* date;
         int volume;
         int pence_spent;
+        int failed_transactions;
     }Sales_Volume;
     
     //defines a node linked in a Sales Ledger list

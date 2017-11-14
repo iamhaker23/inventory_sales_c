@@ -151,12 +151,11 @@
             
             //Initialise line buffer
             size_t line_buff_size = 100;
-            size_t read = 0;
             char line[line_buff_size];
             char* line_ptr = line;
 
             //Loop while we can get a line from the file
-            while((read = (getline(&line_ptr, &line_buff_size, fd))) && read!=-1 ){
+            while(fgets(line, line_buff_size, fd)!=NULL ){
                 //Note: following parsing code based on StockItem.c implementation
                 
                 if (line[0] == '\n' || line[0] == '\r'){
@@ -336,6 +335,7 @@
         Date* highest_volume_date;
         int highest_volume = INT32_MIN;
         int highest_volume_spend = 0;
+        int failed_transactions = 0;
         
         Date* current_volume_date;
         int current_volume = 0;
@@ -348,7 +348,7 @@
             
             //Do not process transaction if there is not enough stock
             if (new_quantity < 0){
-                fprintf(stderr, "Can't process transaction %.2d/%.2d/%.4d, %s, %d: ONLY %d REMAINING.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity, current->item->quantity);
+                failed_transactions = failed_transactions + 1;
                 if (log != NULL){
                     fprintf(log, "Can't process transaction %.2d/%.2d/%.4d, %s, %d: ONLY %d REMAINING.\n", current->date.dayOfMonth, current->date.month, current->date.year, current->item->product_code, current->quantity, current->item->quantity);
                 }
@@ -389,7 +389,7 @@
         performance_record->date = highest_volume_date;
         performance_record->volume = highest_volume;
         performance_record->pence_spent = highest_volume_spend;
-        
+        performance_record->failed_transactions = failed_transactions;
         return performance_record;
     }
     
