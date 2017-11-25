@@ -35,7 +35,6 @@
             //Initialise line buffer
             size_t line_buff_size = 100;
             char line[line_buff_size];
-            char* line_ptr = line;
             
             //load line into line buffer
             while(fgets(line, line_buff_size, fd)!=NULL ){

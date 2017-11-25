@@ -17,7 +17,7 @@
  * Output: StockProgram.log, stdout/stderr
  * 
  */
-int main(int argc, char** argv) {
+int main() {
 
     //Initialise inventory and sales lists
     Inventory* inventory = inventory_new();
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     fflush(log);
     
     //apply sales ledger to inventory, record highest volume stats
-    Sales_Volume* highest_volume = apply_sales_to_inventory(sales_ledger, inventory, log);
+    Sales_Volume* highest_volume = apply_sales(sales_ledger, log);
     
     if (highest_volume->failed_transactions != 0){
         printf("There were %d failed transactions. Check StockProgram.log for details.\n", highest_volume->failed_transactions);

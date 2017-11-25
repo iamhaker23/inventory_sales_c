@@ -152,7 +152,6 @@
             //Initialise line buffer
             size_t line_buff_size = 100;
             char line[line_buff_size];
-            char* line_ptr = line;
 
             //Loop while we can get a line from the file
             while(fgets(line, line_buff_size, fd)!=NULL ){
@@ -328,7 +327,7 @@
         
     }
     
-    Sales_Volume* apply_sales_to_inventory(Sales* sales, Inventory* inventory, FILE* log){
+    Sales_Volume* apply_sales(Sales* sales, FILE* log){
         
         //optimisation decision - less processing/data overhead required to determine highest sales volume of all successful transactions and return in apply_sales_to_inventory().
         //Bugfix - initialised integers to avoid undefined behaviour

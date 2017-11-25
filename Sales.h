@@ -85,7 +85,7 @@ extern "C" {
     void sales_ledger_as_string(Sales* sales, char* sales_string, int estimated_length);
 
     //apply all transactions to given inventory (i.e. update quantities or report failed transactions)
-    Sales_Volume* apply_sales_to_inventory(Sales* sales, Inventory* inventory, FILE* log);
+    Sales_Volume* apply_sales(Sales* sales, FILE* log);
 
     //Store a Sales Volume in memory (so it can be referenced outside the scope of initialising code)
     Sales_Volume* sales_volume_new();
